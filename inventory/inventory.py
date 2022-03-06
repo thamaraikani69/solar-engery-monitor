@@ -41,7 +41,7 @@ if "linux" in platform:
 	# site_url="https://solar.alliancetech.co.in/api/"
 	site_url="https://solarpanel.ai-being.com/api/"
 	# server_path="/var/www/data/"
-	server_path="/var/www/solar-energy-tracking/static/"
+	server_path="/var/www/solar-energy-monitor/static/"
 
 else:
 	site_url="http://127.0.0.1:5000/api/"
