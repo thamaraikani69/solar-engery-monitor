@@ -39,7 +39,7 @@ today=timedate.date()
 # site_url="https://solarpanel.ai-being.com/api/"
 if "linux" in platform:
 	# site_url="https://solar.alliancetech.co.in/api/"
-	site_url="http://solarpanel.ai-being.com/api/"
+	site_url="https://solarpanel.ai-being.com/api/"
 	# server_path="/var/www/data/"
 	server_path="/var/www/solar-energy-monitor/static/"
 
