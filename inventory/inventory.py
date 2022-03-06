@@ -45,7 +45,7 @@ if "linux" in platform:
 
 else:
 	site_url="http://127.0.0.1:5000/api/"
-	server_path="D:\\projects\\Aibeing\\solar_panel_\\solar_panel\\static\\"
+	server_path="D:\\projects\\Aibeing\\solar_panel_\\solar_panel_\\solar energy monitor\\static\\"
 
 
 #===============================================================================# Login #========================================  
