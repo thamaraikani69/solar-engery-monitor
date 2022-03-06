@@ -1,0 +1,277 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="">
+<!--<![endif]-->
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta http-equiv="Refresh" content="300"> 
+
+    <title></title>
+    <meta name="description" content="Ela Admin - HTML5 Admin Template">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="apple-touch-icon" href="https://i.imgur.com/QRAUqs9.png">
+    <link rel="shortcut icon" href="https://i.imgur.com/QRAUqs9.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.0/normalize.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.0/css/flag-icon.min.css">
+    <link rel="stylesheet" href="/static/assets/css/cs-skin-elastic.css">
+    <link rel="stylesheet" href="/static/assets/css/style.css">
+    <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/html5shiv/3.7.3/html5shiv.min.js"></script> -->
+    <link href="https://cdn.jsdelivr.net/npm/chartist@0.11.0/dist/chartist.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/jqvmap@1.5.1/dist/jqvmap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/weathericons@2.1.0/css/weather-icons.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@3.9.0/dist/fullcalendar.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100&display=swap" rel="stylesheet">
+    
+    <style>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    #weatherWidget .currentDesc {
+        color: #ffffff !important;
+    }
+
+    .traffic-chart {
+        min-height: 335px;
+    }
+
+    #flotPie1 {
+        height: 150px;
+    }
+
+    #flotPie1 td {
+        padding: 3px;
+    }
+
+    #flotPie1 table {
+        top: 20px !important;
+        right: -10px !important;
+    }
+
+    .chart-container {
+        display: table;
+        min-width: 270px;
+        text-align: left;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    #flotLine5 {
+        height: 105px;
+    }
+
+    #flotBarChart {
+        height: 150px;
+    }
+
+    #cellPaiChart {
+        height: 160px;
+    }
+    #menu-item{
+        color:white;
+    }
+    body{
+        background-color: #e9e9e9;                                                                                                       
+    }
+
+    </style>
+     <style type="text/css">
+  a:link, a:visited {
+  background-color:#031d44;;
+  color: white;
+  padding: 14px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+a:hover, a:active {
+  background-color: red;
+}
+
+a:active {
+  color: blue;
+  background-color: white;
+}
+</style>
+</head>
+<script type="text/javascript">
+ window.onload=function(){
+  document.getElementById("menuToggle").click();
+};
+
+</script>
+
+
+<body>
+    <!-- Left Panel -->
+    <aside id="left-panel" class="left-panel"style="background-color:#031d44;" >
+        <nav class="navbar navbar-expand-sm navbar-default " style="background-color:#031d44;">
+            <div id="main-menu" class="main-menu collapse navbar-collapse"  style="background-color:#031d44; ">
+                <ul class="nav navbar-nav" style="background-color:#031d44;">
+                    {% if (access=="super_admin") or (access=="controller")%}
+                    <li class="menu-item">
+                        <a href="/solar_panel/dashboard"><i class="menu-icon fas fa-home"></i>Dashboard</a>
+                    </li>
+                    {% endif %}
+                    {% if access == "controller"%}
+                    <li class="menu-item">
+                        <a href="/solar_panel/add_superadmin"><i class="menu-icon  fas fa-plus"></i>Super Admin</a>
+                    </li>
+                    {% endif %}
+                    {% if access == "super_admin" %}
+                    <li class="menu-item-has-children dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fas fa-user-plus"></i>Create</a>
+                        <ul class="sub-menu children dropdown-menu">
+                            <li class="menu-item">
+                                <a href="add_admin_group"><i class="fas fa-user-plus"></i>Add Admin Group</a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="/solar_panel/add_admin"><i class="fas fa-user-plus"></i>Add Admin</a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="/solar_panel/add_roll"><i class="fas fa-user-plus"></i>Add Roll</a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="/solar_panel/add_users"><i class="fas fa-user-plus"></i>Add user</a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="/solar_panel/add_account"><i class="fas fa-pen"></i>Add account</a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="/solar_panel/add_support"><i class="fas fa-user-plus"></i>Add support</a>
+                            </li>
+                        </ul>
+                    </li>
+                   
+                    {% endif %}
+                    {% if access=="super_admin" %}
+                    <li class="menu-item-has-children dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon far fa-hdd"></i>Add device</a>
+                        <ul class="sub-menu children dropdown-menu">
+                            <li class="menu-item">
+                                <a href="/solar_panel/add_weather"><i class="fas fa-pen"></i>Add Weather</a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="/solar_panel/add_energy_meter"><i class="fas fa-pen"></i>Add Energy Meter</a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="/solar_panel/add_inventor"><i class="fas fa-pen"></i>Add Inverter</a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="/solar_panel/add_smb"><i class="fas fa-pen"></i>Add SMB</a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="/solar_panel/add_gateway"><i class="fas fa-pen"></i>Add Gateway</a>
+                            </li>
+                        </ul>
+                    </li>
+                     <li class="menu-item-has-children dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fas fa-file-invoice-dollar"></i>Accounts</a>
+                        <ul class="sub-menu children dropdown-menu">
+                            <li class="menu-item">
+                                <a href="/solar_panel/add_catagory"><i class="fas fa-pen"></i>Add Catagory</a>
+                            </li>
+                        </ul>
+                    </li>
+                      <li class="menu-item">
+                                        <a href="/solar_panel/logout"><i class="menu-icon fas fa-power-off"></i>Log Out</a>
+                                    </li>
+                    </li>
+                   
+                  <!--   <li class="menu-item">
+                        <a href="/solar_panel/metric_com"><i class="menu-icon fas fa-bars"></i>Metric Comparison</a>
+                    </li> -->
+                    </li>
+                    {% endif %}
+                    {% if access == "admin" %}
+                    <li class="menu-item-has-children dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-tasks"></i>view Devices</a>
+                        <ul class="sub-menu children dropdown-menu">
+                            <li class="menu-item">
+                                <a href="/solar_panel/add_weather"><i class="fas fa-pen"></i>view Weather</a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="/solar_panel/add_energy_meter"><i class="fas fa-pen"></i>view Energy Meter</a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="/solar_panel/add_inventor"><i class="fas fa-pen"></i>view Inverter</a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="/solar_panel/add_smb"><i class="fas fa-pen"></i>view SMB</a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="/solar_panel/add_gateway"><i class="fas fa-pen"></i>view Gateway</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="menu-item">
+                        <a href="/solar_panel/datavisual"><i class="menu-icon fas fa-chart-line"></i>Data visualisation</a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="/solar_panel/datavisual_report"><i class="menu-icon fas fa-download"></i>Data visualisation Report</a>
+                    </li>
+                   <!--  <li class="menu-item">
+                        <a href="/solar_panel/metric_com"><i class="menu-icon fas fa-bars"></i>Metric Comparison</a>
+                    </li> -->
+                    <li class="menu-item">
+                                        <a href="/solar_panel/logout"><i class="menu-icon fas fa-power-off"></i>Log Out</a>
+                                    </li>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </nav>
+    </aside>
+    <!-- /#left-panel -->
+    <!-- Right Panel -->
+    <div id="right-panel" class="right-panel " >
+       <header id="header" class="header" style="background-color:#031d44;" >
+            <div class="top-left">
+                <div class="navbar-header"  style="background-color:#031d44;" >
+                    <a id="menuToggle" class="menutoggle"><i class="fa fa-bars"></i></a>
+                   
+                </div>
+            </div>
+            <div class="top-right" style="background-color:#031d44;">
+                <div class="header-menu" style="background-color:#031d44;">
+                {% if access == "admin" %}
+                                <a class="nav-link" href="/solar_panel/plant/today" >Plant <span class="sr-only">(current)</span></a>
+           
+                            
+                                <a class="nav-link" href="/solar_panel/inverter" >Inverters</a>
+                          
+                           
+                                <a class="nav-link" href="/solar_panel/ajbs/ALL" >AJBs</a>
+                            
+                           
+                                <a class="nav-link" href="/solar_panel/energymeter"  >Energy Meters</a>
+
+              {% endif %}
+
+                </div>
+            </div>
+        </header>
+    </div>
+    <!-- Right Panel -->
+    <div id="right-panel" class="right-panel">
+        {{ toastr.include_jquery() }}
+        {{ toastr.include_toastr_css() }}
+        {{ toastr.message() }}
+        {{ toastr.include_toastr_js() }}
+        {% block body %}
+        {% endblock %}
+    </div>
+    </header>
+    </div>
+</body>
+
+</html>

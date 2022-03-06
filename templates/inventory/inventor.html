@@ -1,0 +1,1016 @@
+{% extends "inventory/static.html" %}
+{% block body %}
+        <!-- Content -->
+
+        <div class="content">
+            <!-- Animated -->
+            <div class="row">
+                {% for i in inverter_data %}
+                    {% for j in sl_data %}
+                        {% if (i.slave_id |float == j.ID[0] |float) and (i.equipment_id|float == j.EID[0]|float) %}
+                        
+                <div class="col-sm">
+                    <div class="card" style="width: 18rem;">
+                    
+                        <div class="card-body">
+                            {% if j.connect_status[0] == 'offline' %}
+                            <div class="card-header">{{i.name}} <i class="fas fa-signal" style="color:red"></i>
+                            </div>
+                            <p class="card-text">0<span style="font-size: bold">kW</span><br>
+                                Power<br>
+                                0 MWh<br>
+                                Generation today</p>
+                            {% else %}
+                            <div class="card-header">{{i.name}} <i class="fas fa-signal" style="color:green"></i>
+                            </div>
+                            <p class="card-text">{% if j.FIELD2[0]|int >=1000 %}{{j.FIELD2[0]/1000}} <span style="font-size: bold">MW</span>{% else %}{{j.FIELD2[0]}} <span style="font-size: bold">KW</span> {% endif %}<br>
+                                Power<br>
+                                {% if (j.FIELD31[1]|float/1000) >=1000 %}
+                                {{'%0.2f'| format((j.FIELD31[1]|float/1000)/1000)}}MWh
+                                {% else %}
+                                {{'%0.2f'| format((j.FIELD31[1]|float/1000))}}kwh
+                                {% endif %}<br>
+                                Generation today</p>
+                            <div class="card-footer text-muted">
+                                <button class="btn btn-primary" data-toggle="modal" data-target="#exampleModals_{{j.my_id[0]}}">Parameter readings</a></button>
+                                <div class="modal fade" id="exampleModals_{{j.my_id[0]}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">All DC SLD in</h5>
+                                                <select>
+                                                    <option>{{i.name}}</option>
+                                                </select>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <table class="ui celled table">
+                                                            <thead class="">
+                                                                <tr class="">
+                                                                    <th class="">Parameters</th>
+                                                                    <th class="">Values</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody class="">
+                                                                <tr class="">
+                                                                    <td class="">AC Power</td>
+                                                                    <td class="">{{j.FIELD2[0]}}kW</td>
+                                                                </tr>
+                                                                <tr class="">
+                                                                    <td class="">AC Frequency</td>
+                                                                    <td class="">{{(j.FIELD5[0]|float)/100}}Hz</td>
+                                                                </tr>
+                                                                <tr class="">
+                                                                    <td class="">AC Voltage</td>
+                                                                    <td class="">{{(j.FIELD4[0]|float)/10}}V</td>
+                                                                </tr>
+                                                                <tr class="">
+                                                                    <td class="">AC Voltage R-Phase</td>
+                                                                    <td class="">{{(j.FIELD2[1]|float)/10}}V</td>
+                                                                </tr>
+                                                                <tr class="">
+                                                                    <td class="">AC Voltage Y-Phase</td>
+                                                                    <td class="">{{(j.FIELD3[1]|float)/10}}V</td>
+                                                                </tr>
+                                                                <tr class="">
+                                                                    <td class="">AC Voltage B-Phase</td>
+                                                                    <td class="">{{(j.FIELD1[1]|float)/10}}V</td>
+                                                                </tr>
+                                                                <tr class="">
+                                                                    <td class="">Cubicle Temperature</td>
+                                                                    <td class="">{{(j.FIELD10[1]|float)/10}}C</td>
+                                                                </tr>
+                                                                <tr class="">
+                                                                    <td class="">AC Current</td>
+                                                                    <td class="">{{(j.FIELD4[1]|float)/10}}A</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div class="col">
+                                                        <table class="ui celled table">
+                                                            <thead class="">
+                                                                <tr class="">
+                                                                    <th class="">Parameters</th>
+                                                                    <th class="">Values</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody class="">
+                                                                
+                                                                <tr class="">
+                                                                    <td class="">Todays Generation</td>
+                                                                    
+                                                                    <td class=""> {{j.FIELD31[1]|float/1000}}kWh</td>
+                                                                    
+                                                                </tr>
+                                                                <tr class="">
+                                                                    <td class="">DC Current</td>
+                                                                    <td class="">{{(j.FIELD7[1]|float)/10}}A</td>
+                                                                </tr>
+                                                                <tr class="">
+                                                                    <td class="">DC Voltage</td>
+                                                                    <td class="">{{(j.FIELD5[1]|float)/10}} V</td>
+                                                                </tr>
+                                                                <tr class="">
+                                                                    <td class="">Heat Sink Temperature</td>
+                                                                    <td class="">{{(j.FIELD15[1]|float)/10}} C</td>
+                                                                </tr>
+                                                                <tr class="">
+                                                                    <td class="">Power Factor</td>
+                                                                    <td class="">{{(j.FIELD6[0]|float)/1000}}</td>
+                                                                </tr>
+                                                                <tr class="">
+                                                                    <td class="warning">Reactive Power</td>
+                                                                    <td class="warning">{{j.FIELD3[0]|float}}</td>
+                                                                </tr>
+                                                                <tr class="">
+                                                                    <td class="">Total Generation</td>
+                                                                    <td class="">{{j.FIELD32[1]|float}}kWh</td>
+                                                                </tr>
+                                                                
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal_{{i.id}}">AJB Status</a></button>
+                                <div class="modal fade" id="exampleModal_{{i.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">{{i.name}}</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            
+                                            <div class="modal-body">
+                                                <table class="ui celled table">
+                                                    <thead class="">
+                                                        <tr class="">
+                                                            <th class="">Name</th>
+                                                            <th class="">Power</th>
+                                                            <th class="">current</th>
+                                                            <th class="">voltage</th>
+                                                            <th class="">connected</th>
+                                                            <th class="">DC Isolator status</th>
+                                                            <th class="">SPD status</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="">
+                                                            
+
+                                                {% for s in smb_data %}
+                                                        
+                                                    {% if i.id|int == s.inverter|int %}
+                                                        <tr class="">
+                                                            
+                                                            <td class="">{{s.smb_id}}</td>
+                                                            
+                                                            <!-- <td><button type="button" data-toggle="modal"
+                                                        data-target="#exampleModalCenter_{{s.id}}"> -->
+                                                        <!-- <i class="far fa-eye"></i></button></td> -->
+                                                       
+                                                        {% for sl in smb_sl_data %}     
+                                                             
+
+                                                                    
+                                                            {% if s.slave_id |int == sl.ID |int%}
+ 
+
+                                                                
+
+                                                                <!-- <td><button class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter_{{sl.my_id}}"><i class="far fa-eye"></i></a></button></td> -->
+
+                                                                {% if sl.connect_status != 'offline' %}
+                                                                 {% set current=namespace(value=0) %}
+                                                                {% for r in range(1,25) %}
+                                                                        {% set current.value=sl['FIELD'+r|string]/100|float+current.value %}
+                                                                    {% endfor %}
+                                                                <td class="" style="width:84px">
+                                                                    <!-- react-text: 22 -->{{'%0.2f'| format((current.value*(sl.FIELD34|float/10))/1000)}} 
+                                                                    <!-- /react-text -->
+                                                                    <!-- react-text: 23 -->kW
+                                                                    <!-- /react-text -->
+                                                                </td>
+                                                                <td class="">
+                                                                    <!-- react-text: 25 -->{{'%0.2f'| format((current.value))}}
+                                                                    <!-- /react-text -->
+                                                                    <!-- react-text: 26 -->A
+                                                                    <!-- /react-text -->
+                                                                </td>
+                                                                <td class="">
+                                                                    <!-- react-text: 28 -->{{sl.FIELD34|float/10}}
+                                                                    <!-- /react-text -->
+                                                                    <!-- react-text: 29 -->V
+                                                                    <!-- /react-text -->
+                                                                </td>
+                                                                <td class="" style="color: green;">connected</td>
+                                                                <td class="">ON</td>
+                                                                <td class="">Healthy</td>
+                                                                {% else %}
+                                                                        <td class="">
+                                                                    <!-- react-text: 22 -->0
+                                                                    <!-- /react-text -->
+                                                                    <!-- react-text: 23 -->kW
+                                                                    <!-- /react-text -->
+                                                                    </td>
+                                                                    <td class="">
+                                                                        <!-- react-text: 25 -->0
+                                                                        <!-- /react-text -->
+                                                                        <!-- react-text: 26 -->A
+                                                                        <!-- /react-text -->
+                                                                    </td>
+                                                                    <td class="">
+                                                                        <!-- react-text: 28 -->0
+                                                                        <!-- /react-text -->
+                                                                        <!-- react-text: 29 -->V
+                                                                        <!-- /react-text -->
+                                                                    </td>
+                                                                    <td class="" style="color: red;">disconnected</td>
+                                                                    <td class="">ON</td>
+                                                                    <td class="">Healthy</td>
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                        </tr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                        
+                                                    </tbody>
+                                                </table>
+
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+                {% endfor %}
+                {% for i in smb_sl_data %}
+                                            {% if i.connect_status != 'offline' %}
+
+                                                 {% set online_=namespace(value=0) %}
+                                                 {% set offline_=namespace(value=0) %}
+                                                 {% set spair=namespace(value=0) %}
+                                                 {% set current=namespace(value=0) %}
+
+                                                 {% for r in range(1,25) %}
+
+                                                 {% set current.value=i['FIELD'+r|string]/100|float+current.value %}
+
+                                                       {% if i['FIELD'+r|string]/100|int == 0 %}
+                                                            {% if r >= 21 %}
+                                                                {% set spair.value = spair.value + 1 %} 
+                                                            {% else %}
+                                                                {% set offline_.value = offline_.value + 1 %} 
+                                                            {% endif %}
+                                                        {% else %}
+                                                             {% set online_.value = online_.value + 1 %}  
+                                                        {% endif %}
+                                                {% endfor %}
+                                        
+
+                                    <div class="modal fade bd-example-modal-lg" id="exampleModalCenter_{{i.my_id}}" tabindex="-1"
+                                        role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLongTitle">{{i.smb_id}} <i class="fas fa-signal"
+                                                            style="color:green">Online {{online_.value}}</i> <i class="fas fa-signal"
+                                                            style="color:red">Offline {{offline_.value}}</i> <i class="fas fa-signal"
+                                                            style="color:orange">spair {{spair.value}}</i> 
+                                                            <h5>{{(i['TIME_STAMP'])}}
+                                                        </h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <table class="table table-hover table-bordered">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Name</th>
+                                                                        <th>Current(A)</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td>String 1<br>
+
+                                                                            <div class="progress">
+                                                                                <div {% if i.FIELD1/100|int == 0%} class="progress-bar bg-danger" {% else %} class="progress-bar bg-success" 
+                                                                                {% endif %}
+                                                                                    role="progressbar"
+                                                                                    style="width: 25%"
+                                                                                    aria-valuenow="25" aria-valuemin="0"
+                                                                                    aria-valuemax="100"></div>
+                                                                            </div>
+                                                                        </td>
+
+                                                                        <td>{{i.FIELD1/100}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>String 2<br>
+                                                                            <div class="progress">
+                                                                                
+                                                                                <div {% if i.FIELD2/100|int == 0%} class="progress-bar bg-danger" {% else %} class="progress-bar bg-success" 
+                                                                                {% endif %}
+                                                                                    role="progressbar"
+                                                                                    style="width: 25%"
+                                                                                    aria-valuenow="25" aria-valuemin="0"
+                                                                                    aria-valuemax="100"></div>
+                                                                                    
+                                                                            </div>
+                                                                        </td>
+
+                                                                        <td>{{i.FIELD2/100}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>String 3<br>
+                                                                            <div class="progress">
+                                                                                <div {% if i.FIELD3/100|int == 0%} class="progress-bar bg-danger" {% else %} class="progress-bar bg-success" 
+                                                                                {% endif %}
+                                                                                    role="progressbar"
+                                                                                    style="width: 25%"
+                                                                                    aria-valuenow="25" aria-valuemin="0"
+                                                                                    aria-valuemax="100"></div>
+                                                                            </div>
+                                                                        </td>
+
+                                                                        <td>{{i.FIELD3/100}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>String 4<br>
+                                                                            <div class="progress">
+                                                                                <div {% if i.FIELD4/100|int == 0%} class="progress-bar bg-danger" {% else %} class="progress-bar bg-success" 
+                                                                                {% endif %}
+                                                                                    role="progressbar"
+                                                                                    style="width: 25%"
+                                                                                    aria-valuenow="25" aria-valuemin="0"
+                                                                                    aria-valuemax="100"></div>
+                                                                            </div>
+                                                                        </td>
+
+                                                                        <td>{{i.FIELD4/100}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>String 5<br>
+                                                                            <div class="progress">
+                                                                                <div {% if i.FIELD5/100|int == 0%} class="progress-bar bg-danger" {% else %} class="progress-bar bg-success" 
+                                                                                {% endif %}
+                                                                                    role="progressbar"
+                                                                                    style="width: 25%"
+                                                                                    aria-valuenow="25" aria-valuemin="0"
+                                                                                    aria-valuemax="100"></div>
+                                                                            </div>
+                                                                        </td>
+
+                                                                        <td>{{i.FIELD5/100}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>String 6<br>
+                                                                            <div class="progress">
+                                                                                <div {% if i.FIELD6/100|int == 0%} class="progress-bar bg-danger" {% else %} class="progress-bar bg-success" 
+                                                                                {% endif %}
+                                                                                    role="progressbar"
+                                                                                    style="width: 25%"
+                                                                                    aria-valuenow="25" aria-valuemin="0"
+                                                                                    aria-valuemax="100"></div>
+                                                                            </div>
+                                                                        </td>
+
+                                                                        <td>{{i.FIELD6/100}}</td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class="col">
+                                                            <table class="table table-hover table-bordered">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Name</th>
+                                                                        <th>Current(A)</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td>String 7<br>
+                                                                            <div class="progress">
+                                                                                <div {% if i.FIELD7/100|int == 0 %} class="progress-bar bg-danger" {% else %} class="progress-bar bg-success" 
+                                                                                {% endif %}
+                                                                                    role="progressbar"
+                                                                                    style="width: 25%"
+                                                                                    aria-valuenow="25" aria-valuemin="0"
+                                                                                    aria-valuemax="100"></div>
+                                                                            </div>
+                                                                        </td>
+
+                                                                        <td>{{i.FIELD7/100}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>String 8<br>
+                                                                            <div class="progress">
+                                                                                <div {% if i.FIELD8/100|int == 0%} class="progress-bar bg-danger" {% else %} class="progress-bar bg-success" 
+                                                                                {% endif %}
+                                                                                    role="progressbar"
+                                                                                    style="width: 25%"
+                                                                                    aria-valuenow="25" aria-valuemin="0"
+                                                                                    aria-valuemax="100"></div>
+                                                                            </div>
+                                                                        </td>
+
+                                                                        <td>{{i.FIELD8/100}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>String 9<br>
+                                                                            <div class="progress">
+                                                                                <div {% if i.FIELD9/100|int == 0%} class="progress-bar bg-danger" {% else %} class="progress-bar bg-success" 
+                                                                                {% endif %}
+                                                                                    role="progressbar"
+                                                                                    style="width: 25%"
+                                                                                    aria-valuenow="25" aria-valuemin="0"
+                                                                                    aria-valuemax="100"></div>
+                                                                            </div>
+                                                                        </td>
+
+                                                                        <td>{{i.FIELD9/100}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>String 10<br>
+                                                                            <div class="progress">
+                                                                                <div {% if i.FIELD10/100|int == 0%} class="progress-bar bg-danger" {% else %} class="progress-bar bg-success" 
+                                                                                {% endif %}
+                                                                                    role="progressbar"
+                                                                                    style="width: 25%"
+                                                                                    aria-valuenow="25" aria-valuemin="0"
+                                                                                    aria-valuemax="100"></div>
+                                                                            </div>
+                                                                        </td>
+
+                                                                        <td>{{i.FIELD10/100}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>String 11<br>
+                                                                            <div class="progress">
+                                                                                <div {% if i.FIELD11/100|int == 0%} class="progress-bar bg-danger" {% else %} class="progress-bar bg-success" 
+                                                                                {% endif %}
+                                                                                    role="progressbar"
+                                                                                    style="width: 25%"
+                                                                                    aria-valuenow="25" aria-valuemin="0"
+                                                                                    aria-valuemax="100"></div>
+                                                                            </div>
+                                                                        </td>
+
+                                                                        <td>{{i.FIELD11/100}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>String 12<br>
+                                                                            <div class="progress">
+                                                                                <div {% if i.FIELD12/100|int == 0%} class="progress-bar bg-danger" {% else %} class="progress-bar bg-success" 
+                                                                                {% endif %}
+                                                                                    role="progressbar"
+                                                                                    style="width: 25%"
+                                                                                    aria-valuenow="25" aria-valuemin="0"
+                                                                                    aria-valuemax="100"></div>
+                                                                            </div>
+                                                                        </td>
+
+                                                                        <td>{{i.FIELD12/100}}</td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class="col">
+                                                            <table class="table table-hover table-bordered">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Name</th>
+                                                                        <th>Current(A)</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td>String 13<br>
+                                                                            <div class="progress">
+                                                                                <div {% if i.FIELD13/100|int == 0%} class="progress-bar bg-danger" {% else %} class="progress-bar bg-success" 
+                                                                                {% endif %}
+                                                                                    role="progressbar"
+                                                                                    style="width: 25%"
+                                                                                    aria-valuenow="25" aria-valuemin="0"
+                                                                                    aria-valuemax="100"></div>
+                                                                            </div>
+                                                                        </td>
+
+                                                                        <td>{{i.FIELD13/100}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>String 14<br>
+                                                                            <div class="progress">
+                                                                                <div {% if i.FIELD14/100|int == 0%} class="progress-bar bg-danger" {% else %} class="progress-bar bg-success" 
+                                                                                {% endif %}
+                                                                                    role="progressbar"
+                                                                                    style="width: 25%"
+                                                                                    aria-valuenow="25" aria-valuemin="0"
+                                                                                    aria-valuemax="100"></div>
+                                                                            </div>
+                                                                        </td>
+
+                                                                        <td>{{i.FIELD14/100}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>String 15<br>
+                                                                            <div class="progress">
+                                                                                <div {% if i.FIELD15/100|int == 0%} class="progress-bar bg-danger" {% else %} class="progress-bar bg-success" 
+                                                                                {% endif %}
+                                                                                    role="progressbar"
+                                                                                    style="width: 25%"
+                                                                                    aria-valuenow="25" aria-valuemin="0"
+                                                                                    aria-valuemax="100"></div>
+                                                                            </div>
+                                                                        </td>
+
+                                                                        <td>{{i.FIELD15/100}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>String 16<br>
+                                                                            <div class="progress">
+                                                                                <div {% if i.FIELD16/100|int == 0%} class="progress-bar bg-danger" {% else %} class="progress-bar bg-success" 
+                                                                                {% endif %}
+                                                                                    role="progressbar"
+                                                                                    style="width: 25%"
+                                                                                    aria-valuenow="25" aria-valuemin="0"
+                                                                                    aria-valuemax="100"></div>
+                                                                            </div>
+                                                                        </td>
+
+                                                                        <td>{{i.FIELD16/100}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>String 17<br>
+                                                                            <div class="progress">
+                                                                                <div {% if i.FIELD17/100|int == 0%} class="progress-bar bg-danger" {% else %} class="progress-bar bg-success" 
+                                                                                {% endif %}
+                                                                                    role="progressbar"
+                                                                                    style="width: 25%"
+                                                                                    aria-valuenow="25" aria-valuemin="0"
+                                                                                    aria-valuemax="100"></div>
+                                                                            </div>
+                                                                        </td>
+
+                                                                        <td>{{i.FIELD17/100}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>String 18<br>
+                                                                            <div class="progress">
+                                                                                <div {% if i.FIELD18/100|int == 0%} class="progress-bar bg-danger" {% else %} class="progress-bar bg-success" 
+                                                                                {% endif %}
+                                                                                    role="progressbar"
+                                                                                    style="width: 25%"
+                                                                                    aria-valuenow="25" aria-valuemin="0"
+                                                                                    aria-valuemax="100"></div>
+                                                                            </div>
+                                                                        </td>
+
+                                                                        <td>{{i.FIELD18/100}}</td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <table class="table table-hover table-bordered">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Name</th>
+                                                                        <th>Current(A)</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td>String 19<br>
+                                                                            <div class="progress">
+                                                                                <div {% if i.FIELD19/100|int == 0%} class="progress-bar bg-danger" {% else %} class="progress-bar bg-success" 
+                                                                                {% endif %}
+                                                                                    role="progressbar"
+                                                                                    style="width: 25%"
+                                                                                    aria-valuenow="25" aria-valuemin="0"
+                                                                                    aria-valuemax="100"></div>
+                                                                            </div>
+                                                                        </td>
+
+                                                                        <td>{{i.FIELD19/100}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>String 20<br>
+                                                                            <div class="progress">
+                                                                                <div {% if i.FIELD20/100|int == 0%} class="progress-bar bg-danger" {% else %} class="progress-bar bg-success" 
+                                                                                {% endif %}
+                                                                                    role="progressbar"
+                                                                                    style="width: 25%"
+                                                                                    aria-valuenow="25" aria-valuemin="0"
+                                                                                    aria-valuemax="100"></div>
+                                                                            </div>
+                                                                        </td>
+
+                                                                        <td>{{i.FIELD20/100}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>String 21<br>
+                                                                            <div class="progress">
+                                                                                <div {% if i.FIELD21/100|int == 0%} class="progress-bar bg-danger" {% else %} class="progress-bar bg-success" 
+                                                                                {% endif %}
+                                                                                    role="progressbar"
+                                                                                    style="width: 25%"
+                                                                                    aria-valuenow="25" aria-valuemin="0"
+                                                                                    aria-valuemax="100"></div>
+                                                                            </div>
+                                                                        </td>
+
+                                                                        <td>{{i.FIELD21/100}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>String 22<br>
+                                                                            <div class="progress">
+                                                                                <div {% if i.FIELD22/100|int == 0%} class="progress-bar bg-danger" {% else %} class="progress-bar bg-success" 
+                                                                                {% endif %}
+                                                                                    role="progressbar"
+                                                                                    style="width: 25%"
+                                                                                    aria-valuenow="25" aria-valuemin="0"
+                                                                                    aria-valuemax="100"></div>
+                                                                            </div>
+                                                                        </td>
+
+                                                                        <td>{{i.FIELD22/100}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>String 23<br>
+                                                                            <div class="progress">
+                                                                                <div {% if i.FIELD23/100|int == 0%} class="progress-bar bg-danger" {% else %} class="progress-bar bg-success" 
+                                                                                {% endif %}
+                                                                                    role="progressbar"
+                                                                                    style="width: 25%"
+                                                                                    aria-valuenow="25" aria-valuemin="0"
+                                                                                    aria-valuemax="100"></div>
+                                                                            </div>
+                                                                        </td>
+
+                                                                        <td>{{i.FIELD23/100}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>String 24<br>
+                                                                            <div class="progress">
+                                                                                <div {% if i.FIELD24/100|int == 0%} class="progress-bar bg-danger" {% else %} class="progress-bar bg-success" 
+                                                                                {% endif %}
+                                                                                    role="progressbar"
+                                                                                    style="width: 25%"
+                                                                                    aria-valuenow="25" aria-valuemin="0"
+                                                                                    aria-valuemax="100"></div>
+                                                                            </div>
+                                                                        </td>
+
+                                                                        <td>{{i.FIELD24/100}}</td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+
+                                                        <div class="col">
+                                                            <table class="table table-hover table-bordered">
+                                                                <thead>
+                                                                    <th class="">Parameter</th>
+                                                                    <th class="">Values</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                       
+
+                                                                         <td class="">DC Current</td>
+                                                                            <td class="">{{'%0.2f'| format((current.value))}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                       
+                                                                        <td class="">TEMP1</td>
+                                                                        <td class="">{{i.FIELD33/10}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                       
+                                                                         <td class="">DC Isolator Status</td>
+                                                                        <td class="">1</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                       
+                                                                        <td class="">SPD Status</td>
+                                                                        <td class="">1</td>
+                                                                    </tr>
+                                                                   
+                                                                    
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    {% endfor %}
+                 <!-- {% for t in tdy_gen %} -->
+                                                                    <!-- {% if (i.slave_id |float == t.ID |float) and (i.equipment_id|float == t.EID|float) %} -->
+                                                                    <!-- {% endif %} -->
+                                                                    <!-- {% endfor %} -->
+            </div>
+        </div>
+   
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.4/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
+    <script src="/static/assets/js/main.js"></script>
+    <!--  Chart js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.7.3/dist/Chart.bundle.min.js"></script>
+    <!--Chartist Chart-->
+    <script src="https://cdn.jsdelivr.net/npm/chartist@0.11.0/dist/chartist.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartist-plugin-legend@0.6.2/chartist-plugin-legend.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery.flot@0.8.3/jquery.flot.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flot-pie@1.0.0/src/jquery.flot.pie.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flot-spline@0.0.1/js/jquery.flot.spline.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simpleweather@3.1.0/jquery.simpleWeather.min.js"></script>
+    <script src="/static/assets/js/init/weather-init.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.9.0/dist/fullcalendar.min.js"></script>
+    <script src="/static/assets/js/init/fullcalendar-init.js"></script>
+    <!--Local Stuff-->
+    <script>
+    jQuery(document).ready(function($) {
+        "use strict";
+
+        // Pie chart flotPie1
+        var piedata = [{
+                label: "Desktop visits",
+                data: [
+                    [1, 32]
+                ],
+                color: '#5c6bc0'
+            },
+            {
+                label: "Tab visits",
+                data: [
+                    [1, 33]
+                ],
+                color: '#ef5350'
+            },
+            {
+                label: "Mobile visits",
+                data: [
+                    [1, 35]
+                ],
+                color: '#66bb6a'
+            }
+        ];
+
+        $.plot('#flotPie1', piedata, {
+            series: {
+                pie: {
+                    show: true,
+                    radius: 1,
+                    innerRadius: 0.65,
+                    label: {
+                        show: true,
+                        radius: 2 / 3,
+                        threshold: 1
+                    },
+                    stroke: {
+                        width: 0
+                    }
+                }
+            },
+            grid: {
+                hoverable: true,
+                clickable: true
+            }
+        });
+        // Pie chart flotPie1  End
+        // cellPaiChart
+        var cellPaiChart = [{
+                label: "Direct Sell",
+                data: [
+                    [1, 65]
+                ],
+                color: '#5b83de'
+            },
+            {
+                label: "Channel Sell",
+                data: [
+                    [1, 35]
+                ],
+                color: '#00bfa5'
+            }
+        ];
+        $.plot('#cellPaiChart', cellPaiChart, {
+            series: {
+                pie: {
+                    show: true,
+                    stroke: {
+                        width: 0
+                    }
+                }
+            },
+            legend: {
+                show: false
+            },
+            grid: {
+                hoverable: true,
+                clickable: true
+            }
+
+        });
+        // cellPaiChart End
+        // Line Chart  #flotLine5
+        var newCust = [
+            [0, 3],
+            [1, 5],
+            [2, 4],
+            [3, 7],
+            [4, 9],
+            [5, 3],
+            [6, 6],
+            [7, 4],
+            [8, 10]
+        ];
+
+        var plot = $.plot($('#flotLine5'), [{
+            data: newCust,
+            label: 'New Data Flow',
+            color: '#fff'
+        }], {
+            series: {
+                lines: {
+                    show: true,
+                    lineColor: '#fff',
+                    lineWidth: 2
+                },
+                points: {
+                    show: true,
+                    fill: true,
+                    fillColor: "#ffffff",
+                    symbol: "circle",
+                    radius: 3
+                },
+                shadowSize: 0
+            },
+            points: {
+                show: true,
+            },
+            legend: {
+                show: false
+            },
+            grid: {
+                show: false
+            }
+        });
+        // Line Chart  #flotLine5 End
+        // Traffic Chart using chartist
+        if ($('#traffic-chart').length) {
+            var chart = new Chartist.Line('#traffic-chart', {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                series: [
+                    [0, 18000, 35000, 25000, 22000, 0],
+                    [0, 33000, 15000, 20000, 15000, 300],
+                    [0, 15000, 28000, 15000, 30000, 5000]
+                ]
+            }, {
+                low: 0,
+                showArea: true,
+                showLine: false,
+                showPoint: false,
+                fullWidth: true,
+                axisX: {
+                    showGrid: true
+                }
+            });
+
+            chart.on('draw', function(data) {
+                if (data.type === 'line' || data.type === 'area') {
+                    data.element.animate({
+                        d: {
+                            begin: 2000 * data.index,
+                            dur: 2000,
+                            from: data.path.clone().scale(1, 0).translate(0, data.chartRect.height()).stringify(),
+                            to: data.path.clone().stringify(),
+                            easing: Chartist.Svg.Easing.easeOutQuint
+                        }
+                    });
+                }
+            });
+        }
+        // Traffic Chart using chartist End
+        //Traffic chart chart-js
+        if ($('#TrafficChart').length) {
+            var ctx = document.getElementById("TrafficChart");
+            ctx.height = 150;
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+                    datasets: [{
+                            label: "Visit",
+                            borderColor: "rgba(4, 73, 203,.09)",
+                            borderWidth: "1",
+                            backgroundColor: "rgba(4, 73, 203,.5)",
+                            data: [0, 2900, 5000, 3300, 6000, 3250, 0]
+                        },
+                        {
+                            label: "Bounce",
+                            borderColor: "rgba(245, 23, 66, 0.9)",
+                            borderWidth: "1",
+                            backgroundColor: "rgba(245, 23, 66,.5)",
+                            pointHighlightStroke: "rgba(245, 23, 66,.5)",
+                            data: [0, 4200, 4500, 1600, 4200, 1500, 4000]
+                        },
+                        {
+                            label: "Targeted",
+                            borderColor: "rgba(40, 169, 46, 0.9)",
+                            borderWidth: "1",
+                            backgroundColor: "rgba(40, 169, 46, .5)",
+                            pointHighlightStroke: "rgba(40, 169, 46,.5)",
+                            data: [1000, 5200, 3600, 2600, 4200, 5300, 0]
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    tooltips: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    hover: {
+                        mode: 'nearest',
+                        intersect: true
+                    }
+
+                }
+            });
+        }
+        //Traffic chart chart-js  End
+        // Bar Chart #flotBarChart
+        $.plot("#flotBarChart", [{
+            data: [
+                [0, 18],
+                [2, 8],
+                [4, 5],
+                [6, 13],
+                [8, 5],
+                [10, 7],
+                [12, 4],
+                [14, 6],
+                [16, 15],
+                [18, 9],
+                [20, 17],
+                [22, 7],
+                [24, 4],
+                [26, 9],
+                [28, 11]
+            ],
+            bars: {
+                show: true,
+                lineWidth: 0,
+                fillColor: '#ffffff8a'
+            }
+        }], {
+            grid: {
+                show: false
+            }
+        });
+        // Bar Chart #flotBarChart End
+    });
+    </script>
+
+{% endblock %}

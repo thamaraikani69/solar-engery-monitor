@@ -1,0 +1,1 @@
+{"Gateway": 0, "Inverter": 1, "vcb": 0}

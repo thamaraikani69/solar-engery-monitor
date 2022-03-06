@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>test</title>
+</head>
+<body><h1>ihjadfgsa</h1>
+<script type="text/javascript">
+    current_val=[0,0,10,20,60,30]
+    console.log(current_val)
+    let sum=0
+    current_val.forEach(function(n){
+        sum+=n;
+    })
+
+    avarage=sum/current_val.length;
+    console.log('sum',sum,'average',avarage)
+
+    var largest= current_val[0];
+
+    for (i=0; i<=largest;i++){
+        if (current_val[i]>largest) {
+            largest=current_val[i];
+        }
+    }
+    console.log('largest',Math.max(...current_val))
+</script>
+</body>
+</html>

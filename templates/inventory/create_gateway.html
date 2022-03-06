@@ -1,0 +1,136 @@
+{% extends "inventory/static.html" %}
+{% block body %}'
+      
+        <div class="content">
+            <!-- Animated -->
+            <div class="animated fadeIn">
+                {% if access=="super_admin" %}
+                <div class="row">
+                    <div class="col-lg-6">
+                        <form action="add_gateway" method="POST">
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Enter meter ID</label>
+                                <input type="text" shape="semi-round" placeholder="Meter ID" type="text" class="form-control" name="meter_id">
+                            </div>
+                             <div class="form-group">
+                                <label for="exampleInputEmail1">Enter Capacity</label>
+                                <input type="text" shape="semi-round" placeholder="Capacity" type="text" class="form-control" name="capacity">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Enter apikey</label>
+                                <input type="text" shape="semi-round" placeholder="api_key" type="text" class="form-control" name="api_key" value="">
+                            </div>
+                             <div class="form-group">
+                                <label for="exampleInputEmail1">Enter the Admin Group</label>
+                                 <select name="groupadmin" onclick="admin_data_(this.value);">
+                                    {% for i in admingroup_data %}
+                                        <option value="{{i.id}}">{{i.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                             <div class="form-group">
+                                <label for="exampleInputEmail1">Admin Name</label>
+                                 <select name="admin" id="admin">
+                                    <!-- {% for i in admin_data %}
+                                    <option value="{{i.id}}">{{i.name}}</option>
+                                    {% endfor %} -->
+                                </select>
+                            </div>
+                         
+                          
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">status</label>
+                                <select shape="semi-round" class="form-control" name="status">
+                                    <option selected="" value="active">active</option>
+                                    <option value="inactive">inactive</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary" shape="round" status="success" type="submit">Submit</button>
+                        </form>
+                    </div>
+                </div>
+                {% endif %}
+                <div class="row">
+                    <div class="col">
+                        <table class="table table-bordered" id="editableTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>ENERGY METER ID</th>
+                                    <th>ADDED ON</th>
+                                    <th>CAPACITY</th>
+                                    <th>ADMIN</th>
+                                    <th>APIKEY</th>
+                                    <th>STATUS</th>
+                                    <th>LASTCHANGE</th>
+                                    {% if access=="super_admin" %}
+                                    <th>EDIT</th>
+                                    <TH>DELETE</TH>
+                                    {% endif %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in data %}
+                                <tr data-id="1">
+                                    <td data-field="id">{{i.id}}</td>
+                                    <td data-field="em_id">{{i.Meter_id}}</td>
+                                    <td data-field="addedon">{{i.addedon}}</td>
+                                    <td data-field="Capacity">{{i.capacity}}</td>
+                                    <td data-field="admin">{{i.name}}</td>
+                                    <td data-field="api_key">{{i.api_key}}</td>
+                                    <td data-field="status">{{i.status}}</td>
+                                    <td data-field="lastchange">{{i.lastchange}}</td>
+                                    {% if access=="super_admin" %}
+                                    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+                                    <td>
+                                        <a href="edit_gateway/{{i.id}}" class="button button-small edit" title="Edit">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <form action="delete_gateway/{{i.id}}" method="POST">
+                                            <button type="submit">delete<i class="fa fa-trash"></i></button>
+                                                
+                                            </a>
+                                        </form>
+                                    </td>
+                                    {% endif %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
+     <script type="text/javascript" src="https://res.cloudinary.com/dxfq3iotg/raw/upload/v1567487539/jquery.tabledit.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.4/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
+    <script src="/static/assets/js/main.js"></script>
+
+    <script type="text/javascript">
+                                function admin_data_(value) 
+                                {
+                                let details_data = {{ admin_name_data | tojson }};
+                                    var list = document.getElementById("admin");
+                                    opt=""
+                                    for (let data=0;data<details_data.length;data++) 
+                                    {   
+                                        if(details_data[data]['admin_grp_id']==value)
+                                        {   
+                                            
+                                            opt+='<option value="'+details_data[data]['id']+'">'+details_data[data]['name']+'</option>'
+                                        }
+                                    }
+                                    $('#admin').html(opt)
+                                   
+                                }
+                            </script>
+{% endblock %}

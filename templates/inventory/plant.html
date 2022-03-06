@@ -1,0 +1,1115 @@
+{% extends "inventory/static.html" %}
+{% block body %}
+
+
+<style>
+	span:hover{
+		text-decoration: underline;
+		font-style: bold;
+	}
+</style>
+<div class="content">
+    <div class="animated fadeIn">
+        <!-- Widgets  -->
+        <div class="row">
+            <!--  <div class="btn-group" role="group" aria-label="Basic example">
+                        <a  class="btn btn-light btn-lg active" role="button" aria-pressed="true">Plant</a>
+                        <a class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Inverter</a>
+                        <a class="btn btn-primary btn-lg active" role="button" aria-pressed="true">AJBs</a>
+                        <a  class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Energy Meters</a>
+                        <router-outlet></router-outlet>
+                    </div> -->
+            <div class="card text-white " style="height:540px; width: 250px; background-color:#1d609c;margin-left: 10px;">
+                <!-- horizontal box -->
+                <div class="card-title">
+                    <div><img src="/solar_panel/return-files/admin_group/{{college_details.logo}}" alt="plant-logo" width="250px" height="130px">
+                    </div>
+                </div>
+                <div class="card-body text-white text-center">
+                    <div class="card-text"><span style="font-weight: BOLD;">{{college_details.name}}</span> <br>
+                    </div>
+                    <div class="card-text" style="font-size: 12px;margin-top: 20px">{{college_details.address}}<br></div>
+                    <div class="card-text" style="font-family: 'Montserrat', sans-serif;margin-top: 12px">{{college_details.dc_capacity}} MWp - 10MW<br></div>
+                    <div class="card-text" style="font-weight: bold;text-transform: uppercase;"> DC - AC Capacity<br></div>
+                    {% for wi in sl_data %}
+                    <div class="card-text" style="margin-top: 20px;font-family: 'Montserrat', sans-serif;"><span><i class="fas fa-sun"></i></span><span style="margin-left: 10px">{{wi.FIELD1/10}}° C</span><br></div>
+                                        <div class="card-text" style="font-weight: bold;text-transform: uppercase;"> AMBIENT TEMPERTURE<br></div>
+
+                    <div class="card-text" style="margin-top: 20px;font-family: 'Montserrat', sans-serif;"><span><i class="fas fa-wind"></i></span><span style="margin-left: 10px">{{wi.FIELD4}}m/s</span><br></div>
+                                                            <div class="card-text" style="font-weight: bold;text-transform: uppercase;">WIND SPEED<br></div>
+                    <div class="card-text" style="margin-top: 20px;font-family: 'Montserrat', sans-serif;">
+                        <span>
+
+                            <!-- <img src="https://i.ibb.co/44hVSBT/humidity-3.png" style="background-color:white;width:20px" -->
+                        </span>
+                        <span style="margin-left: 10px">{{humidity}} %</span><br>
+                    </div>
+                                                            <div class="card-text" style="font-weight: bold;text-transform: uppercase;">humidity<br></div>
+                    
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div>
+
+                <style>
+				#chartdiv {
+				  width: 100%;
+				  height: 280px;
+				}
+
+				</style>
+
+				<!-- Resources -->
+				<script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+				<script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
+				<script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+
+				<!-- Chart code -->
+				<script>
+				am4core.ready(function() {
+
+				// Themes begin
+				am4core.useTheme(am4themes_animated);
+				// Themes end
+
+				// Create chart
+				var chart = am4core.create("chartdiv", am4charts.XYChart);
+
+
+				var data = [];
+
+				let c1 = {{poa_graph_data | tojson}}
+				let c2 = {{current_graph_data | tojson}};
+
+                // console.log(c2)
+                current_val=[]
+
+                for(let i in c2)
+                {
+                    current_val.push(c2[i].value);
+                }
+
+                // console.log(current_val)
+                let sum=0
+                current_val.forEach(function(n){
+                    sum+=n;
+                })
+
+                avarage=sum/current_val.length;
+
+                // console.log('sum',sum,'average',avarage,current_val)
+
+                var largest= Math.max(...current_val);
+
+                
+
+                // console.log('largest',largest)
+                document.getElementById('sum').innerHTML=largest.toFixed(0)+' kw';
+                document.getElementById('avg').innerHTML=avarage.toFixed(0)+' kw';
+
+				for(let i in c1)
+				{
+					data.push({"Date": new Date(i), "Irradiation": c1[i].value/1000});
+				}
+				for(let i in c2)
+				{
+					data.push({"DATE II": new Date(i), "Power": c2[i].value});
+				}
+                // console.log(data)
+				chart.data = data;
+
+				var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+				dateAxis.renderer.grid.template.location = 0;
+                dateAxis.renderer.minGridDistance = 30;
+                dateAxis.renderer.fontSize= 12;
+
+              
+
+				var dateAxis2 = chart.xAxes.push(new am4charts.DateAxis());
+				dateAxis2.renderer.grid.template.location = 0;
+                dateAxis2.renderer.disabled=true;
+               dateAxis2.renderer.minGridDistance = 30;
+
+
+
+
+                var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+
+                valueAxis.tooltip.disabled = true;
+                valueAxis.renderer.labels.template.fill = am4core.color("#0a21f2");
+                valueAxis.min = valueAxis.minZoomed;
+                valueAxis.max = 1.5;
+                   valueAxis.renderer.labels.template.adapter.add("text", (label, target, key) => {
+  return label + " Kw/ₘ₂";
+});
+              
+                valueAxis.syncWithAxis = valueAxis;
+
+
+
+                var valueAxis2 = chart.yAxes.push(new am4charts.ValueAxis());
+                valueAxis2.tooltip.disabled = true;
+                valueAxis2.renderer.labels.template.fill = am4core.color("#1c2659");
+                valueAxis2.min = valueAxis.minZoomed;
+                valueAxis2.max = 15000;
+                valueAxis2.strictMinMax = true; 
+                  valueAxis2.renderer.labels.template.adapter.add("text", (label, target, key) => {
+  return label + " Kw";
+});
+           
+               
+
+				var series = chart.series.push(new am4charts.LineSeries());
+				series.name = "Irradiation";
+				series.dataFields.dateX = "Date";
+				series.dataFields.valueY = "Irradiation";
+				series.tooltipText = "{valueY.value}";
+				series.fill = am4core.color("#0a21f2");
+				series.stroke = am4core.color("#0a21f2");
+                series.fillOpacity = 0.5;
+                series.tensionX=0.8;
+				//series.strokeWidth = 3;
+
+				var series2 = chart.series.push(new am4charts.LineSeries());
+				series2.name = "Current Power";
+				series2.dataFields.dateX = "DATE II";
+				series2.dataFields.valueY = "Power";
+				series2.yAxis = valueAxis2;
+				series2.xAxis = dateAxis2;
+				series2.tooltipText = "{valueY.value}";
+				series2.fill = am4core.color("#1c2659");
+				series2.stroke = am4core.color("#1c2659");
+                series2.fillOpacity = 0.5;
+                series2.tensionX=0.8;
+
+				//series2.strokeWidth = 3;
+
+				chart.cursor = new am4charts.XYCursor();
+				chart.cursor.xAxis = dateAxis2;
+
+				var scrollbarX = new am4charts.XYChartScrollbar();
+				scrollbarX.series.push(series);
+				chart.scrollbarX = scrollbarX;
+
+				chart.legend = new am4charts.Legend();
+				chart.legend.parent = chart.plotContainer;
+				chart.legend.zIndex = 100;
+                chart.scrollbarX.disabled = true;
+                chart.scrollbarX.disabled = true;
+				chart.exporting.menu = new am4core.ExportMenu();
+                chart.exporting.getFormatOptions("pdf").addURL = false;
+             
+                chart.exporting.adapter.add("pdfmakeDocument", function(pdf, target) {
+
+  // ...
+
+  // Add a two-column intro
+  pdf.doc.content.push({
+    alignment: 'justify',
+    columns: [{
+      // text: 'Minimum Value:10,Maximum Value:20,Average:30' //ADD DATA HERE
+    }, {
+      text: ''
+    }],
+    columnGap: 20,
+    margin: [0, 30]
+  });
+
+  return pdf;
+});
+
+				valueAxis2.renderer.grid.template.strokeOpacity = 0.07;
+				dateAxis2.renderer.grid.template.strokeOpacity = 0.07;
+                axis.start = 0;
+                axis.stop=0.1;
+				dateAxis.renderer.grid.template.strokeOpacity = 0.07;
+				valueAxis.renderer.grid.template.strokeOpacity = 0.07;
+
+               
+
+				}); // end am4core.ready()
+				</script>
+
+<!-- HTML -->
+                <!-- HTML -->
+                <div class="card" style="margin-left: 20px;">
+                    <div class="card-title" style="margin-top: 10px;margin-left: 10px"><form action="{{relink}}" method="POST">
+                    <div class="row" style="width: 100%">
+                        <div class="col-3">
+                             <input name="from_date"  class="form-control" type="datetime-local">
+                      </div><span>TO</span>
+                      <div class="col-3">
+                           <input name="to_date" class="form-control" type="datetime-local">
+                        </div>
+                        <div class="col-3">
+                            <button class="btn btn-primary" class="form-control"><i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+                  
+            </form></div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            <div id="chartdiv"></div>
+                        </p>
+                    </div>
+                    <div class="card-text">
+                    <div class="row text-center">
+                    	<div class="col-6 text-center">
+                    		Maximum: <span style="font-style: bold;color: red;" id="sum">0</span>
+                    	</div>
+                    	<div class="col-6 text-center">
+                    		Average: <span style="font-style: bold;color:red" id="avg">0</span>
+                    	</div>
+                    </div>
+                    </div>
+                </div>
+
+                    {% set current_power=namespace(value=0) %}
+                    {% set tot_gen=namespace(value=0) %}
+                    {% set today_gen=namespace(value=0) %}
+
+                    {% for i in inverter_data %}
+                        {% for j in inv_sl_data %}
+                            {% if (i.slave_id |float == j.ID[0] |float) and (i.equipment_id|float == j.EID[0]|float) %}
+                                {% if j.connect_status[0] != 'offline' %}
+                                    {% set current_power.value = current_power.value + j.FIELD2[0]|float %}
+                                    {% set tot_gen.value = tot_gen.value + (j.FIELD32[1]|float/1000) %}
+                                    {% set today_gen.value = today_gen.value + (j.FIELD31[1]|float/1000) %}
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+
+                <div class="row">
+                    <div class="col">
+                        <div class="card " style="height: 120px; width: 400px;margin-left: 20px;">
+                            <div class="card-body ">
+                                <div class="card-title">
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="card-medium-text">{{'%0.2f'| format(today_gen.value/1000)}} <span style="font-weight: bold;font-size: 12px;">MWh</span><br><span style="font-size: 13px;font-weight:bold;text-transform: uppercase">Today's
+                                                    Export</span></div>
+                                        </div>
+                                        <div class="col" style="margin-left: 110px;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="100px" height="60px" viewBox="0 0 24 30" version="1.1">
+                                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                    <g fill="#1d609c">
+                                                        <path d="M9,12.9879 L12,7.9999 L15,7.9999 L13,11.9879 L15,11.9879 L10,16.9999 L11,12.9879 L9,12.9879 Z M23,10.9999 L20.941,10.9999 C20.88,10.4529 20.77,9.9199 20.615,9.4059 L21.521,8.8539 C21.992,8.5669 22.142,7.9509 21.854,7.4799 C21.565,7.0069 20.949,6.8589 20.479,7.1459 L19.814,7.5519 C19.58,7.1439 19.317,6.7539 19.025,6.3889 L20.707,4.7069 C21.098,4.3169 21.098,3.6839 20.707,3.2929 C20.316,2.9019 19.684,2.9019 19.293,3.2929 L17.611,4.9749 C17.222,4.6639 16.807,4.3829 16.369,4.1379 L16.78,3.6259 C17.126,3.1949 17.057,2.5659 16.626,2.2199 C16.196,1.8749 15.567,1.9439 15.22,2.3739 L14.488,3.2849 C14.473,3.3049 14.469,3.3289 14.455,3.3489 C13.984,3.2149 13.499,3.1149 13,3.0589 L13,0.9999 C13,0.4479 12.553,-0.0001 12,-0.0001 C11.447,-0.0001 11,0.4479 11,0.9999 L11,3.0589 C10.452,3.1199 9.919,3.2299 9.405,3.3849 L8.854,2.4799 C8.565,2.0079 7.949,1.8599 7.479,2.1459 C7.008,2.4339 6.858,3.0489 7.146,3.5209 L7.552,4.1859 C7.143,4.4199 6.754,4.6829 6.389,4.9749 L4.707,3.2929 C4.316,2.9019 3.684,2.9019 3.293,3.2929 C2.902,3.6839 2.902,4.3169 3.293,4.7069 L4.975,6.3889 C4.663,6.7789 4.382,7.1929 4.138,7.6319 L3.626,7.2199 C3.195,6.8759 2.566,6.9439 2.221,7.3739 C1.875,7.8039 1.943,8.4339 2.374,8.7799 L3.285,9.5119 C3.305,9.5279 3.328,9.5329 3.349,9.5469 C3.215,10.0179 3.114,10.5019 3.059,10.9999 L1,10.9999 C0.447,10.9999 0,11.4479 0,11.9999 C0,12.5519 0.447,12.9999 1,12.9999 L3.059,12.9999 C3.12,13.5479 3.23,14.0799 3.385,14.5939 L2.479,15.1459 C2.008,15.4339 1.858,16.0489 2.146,16.5209 C2.335,16.8299 2.664,16.9999 3.001,16.9999 C3.179,16.9999 3.358,16.9529 3.521,16.8539 L4.186,16.4479 C4.42,16.8569 4.683,17.2459 4.975,17.6109 L2.293,20.2929 C1.902,20.6839 1.902,21.3169 2.293,21.7069 C2.488,21.9019 2.744,21.9999 3,21.9999 C3.256,21.9999 3.512,21.9019 3.707,21.7069 L6.389,19.0249 C6.778,19.3369 7.193,19.6179 7.631,19.8619 L7.22,20.3739 C6.874,20.8049 6.943,21.4339 7.374,21.7799 C7.559,21.9279 7.779,21.9999 7.999,21.9999 C8.292,21.9999 8.582,21.8719 8.78,21.6259 L9.512,20.7149 C9.527,20.6949 9.531,20.6709 9.545,20.6509 C10.016,20.7849 10.501,20.8859 11,20.9409 L11,22.9999 C11,23.5519 11.447,23.9999 12,23.9999 C12.553,23.9999 13,23.5519 13,22.9999 L13,20.9409 C13.548,20.8799 14.081,20.7699 14.595,20.6149 L15.146,21.5209 C15.335,21.8299 15.664,21.9999 16.001,21.9999 C16.179,21.9999 16.358,21.9529 16.521,21.8539 C16.992,21.5669 17.142,20.9509 16.854,20.4799 L16.448,19.8139 C16.857,19.5809 17.246,19.3179 17.611,19.0249 L19.293,20.7069 C19.488,20.9019 19.744,20.9999 20,20.9999 C20.256,20.9999 20.512,20.9019 20.707,20.7069 C21.098,20.3169 21.098,19.6839 20.707,19.2929 L19.025,17.6109 C19.36,17.1929 19.662,16.7479 19.918,16.2739 L21.643,16.9339 C21.76,16.9789 21.881,17.0009 22,17.0009 C22.402,17.0009 22.781,16.7559 22.934,16.3579 C23.132,15.8419 22.873,15.2639 22.357,15.0659 L20.661,14.4159 C20.789,13.9569 20.887,13.4859 20.941,12.9999 L23,12.9999 C23.553,12.9999 24,12.5519 24,11.9999 C24,11.4479 23.553,10.9999 23,10.9999 L23,10.9999 Z">
+                                                        </path>
+                                                    </g>
+                                                </g>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin-top: -10px">
+                                        <div class="col">
+                                            <div class="card-medium-text"> {{'%0.2f'| format(tot_gen.value/1000)}}<span style="font-weight: bold;font-size: 12px;"> Gwh</span><br></div>
+                                            <div class="card-medium-text"><span style="font-size: 13px;font-weight:bold;text-transform: uppercase">Total
+                                                    Export </span> </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- -------------------------------------------------------------------------------------------------------------------------------------------------------- -->
+                    <div class="col">
+                        <div class="card" style="height: 120px; width: 400px;">
+                            <div class="card-body">
+                                <div class="card-title">
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="card-medium-text">{{'%0.2f'| format((tot_gen.value/1000)*100)}} <span style="font-weight: bold;font-size: 12px;">K </span><br><span style="font-size: 13px;font-weight: bold;text-transform: uppercase"> Trees planted</span> </div>
+                                        </div>
+                                        <div class="col" style="margin-left: 80px;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="100px" height="80px" version="1.1" x="0px" y="0px" viewBox="0 0 512 640" enable-background="new 0 0 512 512" style="margin-bottom: 0px;margin-top: -9px;">
+                                                <g fill="#1d609c">
+                                                    <path d="M432.4,68.9c-161.3,33.9-136.9,74.6-158,149.8c26.5-32.7,56.1-29.3,93.8-54.9c0,0-9.2,62.4-87.1,70.6   C339.1,281.6,484.6,261.5,432.4,68.9z">
+                                                    </path>
+                                                    <path d="M199.5,181.1l-131,131h37.4v131h187.2v-131h37.4L199.5,181.1z M218.2,330.9h-37.4v-37.4h37.4V330.9z">
+                                                    </path>
+                                                </g>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin-top: -20px">
+                                        <div class="col">
+                                            <div class="card-medium-text">{{'%0.2f'| format((tot_gen.value*0.7*1000)/1000)}} <span style="font-weight: bold;font-size: 14px;"> Ton</span></div>
+                                            <span style="font-size: 13px;font-weight: bold;text-transform: uppercase">Carbon Emissions saved</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- -------------------------------------------------------------------------------------------------------------------------------------------------------- -->
+            <style type="text/css">
+
+.icon {
+  position: relative;
+  display: inline-block;
+  width: 12em;
+  height: 10em;
+  font-size: 1em; /* control icon size here */
+}
+
+.cloud {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  width: 3.6875em;
+  height: 3.6875em;
+  margin: -1.84375em;
+  background: currentColor;
+  border-radius: 50%;
+  box-shadow:
+    -2.1875em 0.6875em 0 -0.6875em,
+    2.0625em 0.9375em 0 -0.9375em,
+    0 0 0 0.375em #fff,
+    -2.1875em 0.6875em 0 -0.3125em #fff,
+    2.0625em 0.9375em 0 -0.5625em #fff;
+}
+.cloud:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -0.5em;
+  display: block;
+  width: 4.5625em;
+  height: 1em;
+  background: currentColor;
+  box-shadow: 0 0.4375em 0 -0.0625em #fff;
+}
+.cloud:nth-child(2) {
+  z-index: 0;
+  background: #fff;
+  box-shadow:
+    -2.1875em 0.6875em 0 -0.6875em #fff,
+    2.0625em 0.9375em 0 -0.9375em #fff,
+    0 0 0 0.375em #fff,
+    -2.1875em 0.6875em 0 -0.3125em #fff,
+    2.0625em 0.9375em 0 -0.5625em #fff;
+  opacity: 0.3;
+  transform: scale(0.5) translate(6em, -3em);
+  animation: cloud 4s linear infinite;
+}
+.cloud:nth-child(2):after { background: #fff; }
+
+.sun {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2.5em;
+  height: 2.5em;
+  margin: -1.25em;
+  background: currentColor;
+  border-radius: 50%;
+  box-shadow: 0 0 0 0.375em #fff;
+  animation: spin 12s infinite linear;
+}
+.rays {
+  position: absolute;
+  top: -2em;
+  left: 50%;
+  display: block;
+  width: 0.375em;
+  height: 1.125em;
+  margin-left: -0.1875em;
+  background: #fff;
+  border-radius: 0.25em;
+  box-shadow: 0 5.375em #fff;
+}
+.rays:before,
+.rays:after {
+  content: '';
+  position: absolute;
+  top: 0em;
+  left: 0em;
+  display: block;
+  width: 0.375em;
+  height: 1.125em;
+  transform: rotate(60deg);
+  transform-origin: 50% 3.25em;
+  background: #fff;
+  border-radius: 0.25em;
+  box-shadow: 0 5.375em #fff;
+}
+.rays:before {
+  transform: rotate(120deg);
+}
+.cloud + .sun {
+  margin: -2em 1em;
+}
+
+.rain,
+.lightning,
+.snow {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  width: 3.75em;
+  height: 3.75em;
+  margin: 0.375em 0 0 -2em;
+}
+
+.rain:after {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  width: 1.125em;
+  height: 1.125em;
+  margin: -1em 0 0 -0.25em;
+  background: #0cf;
+  border-radius: 100% 0 60% 50% / 60% 0 100% 50%;
+  box-shadow:
+    0.625em 0.875em 0 -0.125em rgba(255,255,255,0.2),
+    -0.875em 1.125em 0 -0.125em rgba(255,255,255,0.2),
+    -1.375em -0.125em 0 rgba(255,255,255,0.2);
+  transform: rotate(-28deg);
+  animation: rain 3s linear infinite;
+}
+
+.bolt {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -0.25em 0 0 -0.125em;
+  color: #fff;
+  opacity: 0.3;
+  animation: lightning 2s linear infinite;
+}
+.bolt:nth-child(2) {
+  width: 0.5em;
+  height: 0.25em;
+  margin: -1.75em 0 0 -1.875em;
+  transform: translate(2.5em, 2.25em);
+  opacity: 0.2;
+  animation: lightning 1.5s linear infinite;
+}
+.bolt:before,
+.bolt:after {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  margin: -1.625em 0 0 -1.0125em;
+  border-top: 1.25em solid transparent;
+  border-right: 0.75em solid;
+  border-bottom: 0.75em solid;
+  border-left: 0.5em solid transparent;
+  transform: skewX(-10deg);
+}
+.bolt:after {
+  margin: -0.25em 0 0 -0.25em;
+  border-top: 0.75em solid;
+  border-right: 0.5em solid transparent;
+  border-bottom: 1.25em solid transparent;
+  border-left: 0.75em solid;
+  transform: skewX(-10deg);
+}
+.bolt:nth-child(2):before {
+  margin: -0.75em 0 0 -0.5em;
+  border-top: 0.625em solid transparent;
+  border-right: 0.375em solid;
+  border-bottom: 0.375em solid;
+  border-left: 0.25em solid transparent;
+}
+.bolt:nth-child(2):after {
+  margin: -0.125em 0 0 -0.125em;
+  border-top: 0.375em solid;
+  border-right: 0.25em solid transparent;
+  border-bottom: 0.625em solid transparent;
+  border-left: 0.375em solid;
+}
+
+.flake:before,
+.flake:after {
+  content: '\2744';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -1.025em 0 0 -1.0125em;
+  color: #fff;
+  list-height: 1em;
+  opacity: 0.2;
+  animation: spin 8s linear infinite reverse;
+}
+.flake:after {
+  margin: 0.125em 0 0 -1em;
+  font-size: 1.5em;
+  opacity: 0.4;
+  animation: spin 14s linear infinite;
+}
+.flake:nth-child(2):before {
+  margin: -0.5em 0 0 0.25em;
+  font-size: 1.25em;
+  opacity: 0.2;
+  animation: spin 10s linear infinite;
+}
+.flake:nth-child(2):after {
+  margin: 0.375em 0 0 0.125em;
+  font-size: 2em;
+  opacity: 0.4;
+  animation: spin 16s linear infinite reverse;
+}
+
+
+/* Animations */ 
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes cloud {
+  0% { opacity: 0; }
+  50% { opacity: 0.3; }
+  100% {
+    opacity: 0;
+    transform: scale(0.5) translate(-200%, -3em);
+  }
+}
+
+@keyframes rain {
+  0% {
+    background: #0cf;
+    box-shadow:
+      0.625em 0.875em 0 -0.125em rgba(255,255,255,0.2),
+      -0.875em 1.125em 0 -0.125em rgba(255,255,255,0.2),
+      -1.375em -0.125em 0 #0cf;
+  }
+  25% {
+    box-shadow:
+      0.625em 0.875em 0 -0.125em rgba(255,255,255,0.2),
+      -0.875em 1.125em 0 -0.125em #0cf,
+      -1.375em -0.125em 0 rgba(255,255,255,0.2);
+  }
+  50% {
+    background: rgba(255,255,255,0.3);
+    box-shadow:
+      0.625em 0.875em 0 -0.125em #0cf,
+      -0.875em 1.125em 0 -0.125em rgba(255,255,255,0.2),
+      -1.375em -0.125em 0 rgba(255,255,255,0.2);
+  }
+  100% {
+    box-shadow:
+      0.625em 0.875em 0 -0.125em rgba(255,255,255,0.2),
+      -0.875em 1.125em 0 -0.125em rgba(255,255,255,0.2),
+      -1.375em -0.125em 0 #0cf;
+  }
+}
+
+@keyframes lightning {
+  45% {
+    color: #fff;
+    background: #fff;
+    opacity: 0.2;
+  }
+  50% {
+    color: #0cf;
+    background: #0cf;
+    opacity: 1;
+  }
+  55% {
+    color: #fff;
+    background: #fff;
+    opacity: 0.2;
+  }
+}
+</style>
+            <div class="card" style="height: 565px; width: 250px; background-color:#1d609c; margin-left: 15px;">
+                <!-- horizontal box -->
+                <div class="card-body text-white text-center " style="border-color: black;font-weight: bold;">
+                    <div class="card-title">
+                        <div>
+
+                            <div class="icon sun-shower" style="width:150px;height: 130px;">
+                              <div class="cloud"></div>
+                                  <div class="sun">
+                                    <div class="rays"></div>
+                                  </div>
+                                <div class="rain"></div>
+                            </div>
+                        </div><div class="card-text" style="font-weight: bold;text-transform: uppercase;">{{description|title}}<br></div>
+                            <div class="card-text">{{today_date.strftime('%d-%m-%Y %H:%M')}}<br></div>
+
+                    </div>
+                    <div class="col" style="margin-top: 0px;">
+                        
+                        
+                      
+                        {% for i in w_w_data %}
+                            {% for j in poa_data %}
+                                    {% if (i.slave_id |float == j.ID |float) and (i.equipment_id|float == j.EID|float) %}
+                                        <div class="card-text" style="font-family: 'Montserrat', sans-serif;"> {{'%0.2f'|format((j.poa_value/10)/1000)}}kWh/m^2</div>
+                                        <div class="card-text" style="font-weight: bold;text-transform: uppercase;"> Insolation<br><br></div>
+                                        <div class="card-text" style="font-family: 'Montserrat', sans-serif;">
+                                            {% if ((current_power.value)/(college_details.dc_capacity*1000)) != 0.0 and irradiation !=0 %}
+                                            {{'%0.2f'|format((((current_power.value)/(college_details.dc_capacity*1000))/(irradiation/1000))*100)}} %
+                                            {% else %}
+                                            0.0
+                                            {% endif %}
+                                            <br></div>
+                                        <div class="card-text" style="font-weight: bold;text-transform: uppercase;">Performance Ratio<br> <br></div>
+                                    {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                        
+                        <div class="card-text" style="font-family: 'Montserrat', sans-serif;">
+                           {{'%0.2f'|format(((today_gen.value)/(college_details.dc_capacity*10*24)))}} % / 19 %</div>
+                        <div class="card-text">CUF <br><br> </div>
+                        <div class="card-text" style="font-family: 'Montserrat', sans-serif;">{{'%0.2f'|format(((today_gen.value)/(college_details.dc_capacity*1000)))}}  kWh/kWp <br> </div>
+                        <div class="card-text"  style="font-weight: bold;text-transform: uppercase;">Specific Yield</div><br>
+
+                        <div class="card-text">last data: {{last_data['TIME_STAMP']}}<br></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- -------------------------------------------------------------------------------------------------------------------------------------------------------- -->
+        <div class="row">
+            <!-- -------------------------------------------------------------------------------------------------------------------------------------------------------- -->
+            <!--                                                        bottom side                                                                                -->
+            <div class="card" style="height: 220px; width: 305px;margin-left: 10px;">
+                <div class="card-body">
+                    <div class="card-title">
+                        <div class="row">
+                            <div class="col">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="100px" height="60px" version="1.1" x="0px" y="0px" viewBox="0 0 100 125">
+                                    <g transform="translate(0,-952.36218)">
+                                        <path d="m 13,959.23722 -6,59.99998 c -0.071,0.5635 0.432,1.1294 1,1.125 l 41,0 0,1 0,14 0,1 -13,0 c -0.5236,10e-5 -0.9999,0.4764 -1,1 l 0,8 c 1e-4,0.5236 0.4764,1 1,1 l 28,0 c 0.5236,0 0.9999,-0.4764 1,-1 l 0,-8 c -1e-4,-0.5236 -0.4764,-0.9999 -1,-1 l -13,0 0,-1 0,-14 0,-1 41,0 c 0.568,0 1.071,-0.5615 1,-1.125 l -6,-59.99998 c -0.061,-0.48063 -0.5156,-0.87875 -1,-0.875 l -72,0 c -0.6059,0.003 -0.9124,0.53473 -1,0.875 z m 1.9062,1.125 22.0313,0 -1.2187,18 -22.5938,0 z m 24.0313,0 21.125,0 1.1875,18 -23.5,0 z m 23.125,0 23.0313,0 1.7812,18 -23.5938,0 z m -49.1563,20 22.6876,0 -1.1876,18.00004 -23.2812,0 z m 24.6876,0 23.8124,0 1.1876,18.00004 -26.1876,0 z m 25.8124,0 23.6876,0 1.7812,18.00004 -24.2812,0 z m -52.5,20.00008 23.3438,0 -1.1875,17.9999 -23.9375,0 z m 25.375,0 26.4376,0 1.2187,17.9999 -28.875,0 z m 28.4688,0 24.3438,0 1.7812,17.9999 -24.9375,0 z m -27.75,37.9999 26,0 0,6 -26,0 z" fill="#000000" fill-opacity="1" stroke="none" visibility="visible" display="inline" overflow="visible" style="text-indent: 0px; text-transform: none; direction: ltr; baseline-shift: baseline; color: rgb(0, 0, 0);">
+                                        </path>
+                                    </g>
+                                </svg>
+                            </div>
+                            <div class="col">
+                                <div class="card-medium-text">33579 <br></div>
+                                <div class="card-medium-text"><span style="font-weight: bold;">Panels</span><br></div>
+                            </div>
+                            <div class="col">
+                                <i class="fas fa-check fa-2x" style="color: green;"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col" style="text-align: right;margin-top: 40px;">
+                            <div class="card-medium-text"  style="font-size: 12px;font-weight:bold">Trina Solar<br> </div>
+                            <div class="card-medium-text"  style="font-size: 12px;font-weight:bold"> 325 wp</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- -------------------------------------------------------------------------------------------------------------------------------------------------------- -->
+            <div class="card" style="height: 220px; width: 305px;margin-left: 10px;">
+                <div class="card-body">
+                    <Div class="row">
+                        <div class="col">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="100px" height="60px" viewBox="0 0 16 20" version="1.1" x="0px" y="0px" transform="rotate(-90)">
+                                <g transform="translate(0,-1036.3622)">
+                                    <g transform="translate(78,-251.00067)">
+                                        <g transform="translate(27.506945,-29.633208)">
+                                            <path d="M 2.0371094 1.03125 L 2.0371094 1.53125 L 2.0371094 3.03125 L 1.0371094 3.03125 L 1.0371094 4.03125 L 2.0371094 4.03125 L 2.0371094 6.0292969 L 6.0371094 6.0292969 L 6.0371094 1.03125 L 2.0371094 1.03125 z M 9.0371094 1.03125 L 9.0371094 1.53125 L 9.0371094 6.0292969 L 13.037109 6.0292969 L 13.037109 4.03125 L 14.037109 4.03125 L 14.037109 3.03125 L 13.037109 3.03125 L 13.037109 1.03125 L 9.0371094 1.03125 z M 3.0371094 2.03125 L 5.0371094 2.03125 L 5.0371094 5.0292969 L 3.0371094 5.0292969 L 3.0371094 4.03125 L 4.0371094 4.03125 L 4.0371094 3.03125 L 3.0371094 3.03125 L 3.0371094 2.03125 z M 10.037109 2.03125 L 12.037109 2.03125 L 12.037109 3.03125 L 11.037109 3.03125 L 11.037109 4.03125 L 12.037109 4.03125 L 12.037109 5.0292969 L 10.037109 5.0292969 L 10.037109 2.03125 z M 7.0371094 4.03125 L 7.0371094 8.1171875 L 6.4765625 7.5546875 L 5.7695312 8.2617188 L 7.5371094 10.03125 L 9.3046875 8.2617188 L 8.5976562 7.5546875 L 8.0371094 8.1171875 L 8.0371094 4.03125 L 7.0371094 4.03125 z M 7.5371094 10.03125 L 5.0371094 10.03125 L 5.0371094 10.53125 L 5.0371094 13.03125 L 0.037109375 13.03125 L 0.037109375 14.03125 L 5.0371094 14.03125 L 5.0371094 16.029297 L 10.037109 16.029297 L 10.037109 14.03125 L 15.037109 14.03125 L 15.037109 13.03125 L 10.037109 13.03125 L 10.037109 10.03125 L 7.5371094 10.03125 z M 6.0371094 11.03125 L 9.0371094 11.03125 L 9.0371094 13.03125 L 6.0371094 13.03125 L 6.0371094 11.03125 z M 6.0371094 14.03125 L 9.0371094 14.03125 L 9.0371094 15.029297 L 6.0371094 15.029297 L 6.0371094 14.03125 z " transform="translate(-105.50695,1316.9961)"></path>
+                                        </g>
+                                    </g>
+                                </g>
+                            </svg>
+                        </div>
+                        <div class="col">
+                            {% set offline=namespace(value=0) %}
+                                {% set online=namespace(value=0) %}
+                                {% for i in smb_data %}
+                                    {% for j in ajbs_sl_data %}
+                                        {% if i.slave_id |int == j.ID |int%}
+                                            {% if j.connect_status != 'offline' %}
+                                            
+                                                {% set online.value = online.value + 1 %}
+                                            {% else %}
+                                                {% set offline.value = offline.value + 1 %}
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+
+
+                            <div class="card-medium-text">{{online.value}} / 77 <br> </div>
+                            <div class="card-medium-text"><span style="font-weight: bold;" title="Click to open AJBs" onclick="window.location='/solar_panel/ajbs/ALL'">AJBs</span><br></div>
+                        </div>
+                        <div class="col">
+                            <i class="fas fa-check fa-2x" style="color: green;"></i>
+                        </div>
+                    </div>
+                    <div class="row">
+                        
+                        <div class="col" style="text-align: right;margin-top: 60px;">
+                            <div class="card-medium-text"  style="font-size: 12px;font-weight:bold">Hensel<br> </div>
+                            <div class="card-medium-text"  style="font-size: 12px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- -------------------------------------------------------------------------------------------------------------------------------------------------------- -->
+            <div class="card" style="height: 220px; width: 305px;margin-left: 10px;">
+                <div class="card-body">
+                    <div class="card-title">
+                        <div class="row">
+                            <div class="col">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="100px" height="60px" version="1.1" x="0px" y="0px" viewBox="0 0 100 125" enable-background="new 0 0 100 100">
+                                    <path d="M60,98.1L9.3,68.9V21.1L41.2,2.7L91.9,32v47.7L60,98.1z M12,67.3L60,95l29.2-16.9V33.6l-48-27.7L12,22.7V67.3z">
+                                    </path>
+                                    <g>
+                                        <polygon points="24.8,76.2 45.9,88.4 45.9,55.9 24.8,43.6  "></polygon>
+                                        <path d="M46.6,89.6l-22.5-13V42.5l22.5,13V89.6z M25.4,75.8l19.8,11.4v-31L25.4,44.8V75.8z">
+                                        </path>
+                                    </g>
+                                    <rect x="34.9" y="49.7" width="0.9" height="32.6"></rect>
+                                    <polygon points="60,51.2 59.7,51 10.3,22.5 11,21.3 60,49.6 89.5,32.6 90.2,33.8 ">
+                                    </polygon>
+                                    <rect x="59.4" y="50.4" width="1.4" height="46.1"></rect>
+                                    <g>
+                                        <path d="M79.4,48L76,50.1l-6.3,21.5l8.8-8.6l-2.2,11.1l-1.5-0.5l0.8,5.1l3.4-6.6L76.9,74L82,58l-9.4,8.8L79.4,48">
+                                        </path>
+                                    </g>
+                                </svg>
+                            </div>
+
+                                {% set inv_offline=namespace(value=0) %}
+                                {% set inv_online=namespace(value=0) %}
+                                {% for i in inverter_data %}
+                                    {% for j in inv_sl_data %}
+                                    
+                                        {% if (i.slave_id |float == j.ID[0] |float) and (i.equipment_id|float == j.EID[0]|float) %}
+                                            
+                                            {% if j.connect_status[0] != 'offline' %}
+                                            
+                                                {% set inv_online.value = inv_online.value + 1 %}
+                                            {% else %}
+                                                {% set inv_offline.value = inv_offline.value + 1 %}
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                            <div class="col">
+                                <div class="card-medium-text">{{inv_online.value}} / 6 <br></div>
+                                <div class="card-medium-text"><span style="font-weight: bold;" title="click to open Inverter" onclick="window.location='/solar_panel/inverter'">Inverter</span></div>
+                            </div>
+                            <div class="col">
+                                <i class="fas fa-check fa-2x" style="color: green;"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <Div class="row">
+                        <div class="col" style="margin-top: 40px;">
+                            <div class="card-medium-text">{{'%0.2f'| format(today_gen.value/1000)}} <span style="font-weight: bold;font-size: 12px;">Mwh</span>
+                            </div>
+                            <div class="card-medium-text" style="font-size: 12px;font-weight:bold">Today's Inverter generation<br></div>
+                        </div>
+                        <div class="col" style="margin-top: 40px;">
+                            <div class="card-medium-text">{{current_power.value}} <span style="font-weight: bold;font-size: 12px;">Kw</span>
+                            </div>
+                            <div class="card-medium-text"  style="font-size: 12px;font-weight:bold">Current power<br></div>
+                        </div>
+                    </Div>
+                </div>
+            </div>
+            <!-- -------------------------------------------------------------------------------------------------------------------------------------------------------- -->
+            <div class="card" style="height: 220px; width: 305px;margin-left: 10px;">
+                <div class="card-body">
+                    <div class="card-title">
+                        <div class="row">
+                            <div class="col">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="100px" height="60px" version="1.1" x="0px" y="0px" viewBox="0 0 100 125" enable-background="new 0 0 100 100">
+                                    <path d="M72.83,68.059c-0.828,0-1.5,0.672-1.5,1.5v5.678c0,0.828,0.672,1.5,1.5,1.5s1.5-0.672,1.5-1.5v-5.678  C74.33,68.73,73.658,68.059,72.83,68.059z M64.607,54.652c-0.828,0-1.5,0.672-1.5,1.5v19.084c0,0.828,0.672,1.5,1.5,1.5  s1.5-0.672,1.5-1.5V56.152C66.107,55.324,65.436,54.652,64.607,54.652z M68.719,62.309c-0.828,0-1.5,0.672-1.5,1.5v11.428  c0,0.828,0.672,1.5,1.5,1.5s1.5-0.672,1.5-1.5V63.809C70.219,62.98,69.547,62.309,68.719,62.309z M76.941,60.309  c-0.828,0-1.5,0.672-1.5,1.5v13.428c0,0.828,0.672,1.5,1.5,1.5s1.5-0.672,1.5-1.5V61.809C78.441,60.98,77.77,60.309,76.941,60.309z   M81.053,65.83c-0.828,0-1.5,0.672-1.5,1.5v7.906c0,0.828,0.672,1.5,1.5,1.5s1.5-0.672,1.5-1.5V67.33  C82.553,66.502,81.881,65.83,81.053,65.83z M75.123,45.042V32.195c0-2.307-1.875-4.183-4.182-4.183H11.414  c-2.306,0-4.181,1.876-4.181,4.183v13.021c0,2.307,1.875,4.183,4.181,4.183h47.301c-0.924,0.744-1.771,1.572-2.557,2.458  c-0.119-0.029-0.242-0.051-0.371-0.051H11.414c-2.306,0-4.181,1.875-4.181,4.182V69.01c0,2.307,1.875,4.182,4.181,4.182h28.265  v12.914c-1.819,0.518-3.253,1.951-3.771,3.771H21.111c-0.828,0-1.5,0.672-1.5,1.5s0.672,1.5,1.5,1.5h14.796  c0.654,2.297,2.768,3.986,5.271,3.986c2.505,0,4.618-1.689,5.272-3.986h14.795c0.828,0,1.5-0.672,1.5-1.5s-0.672-1.5-1.5-1.5H46.451  c-0.519-1.82-1.952-3.254-3.772-3.771V73.191h9.626C55.33,81.039,62.93,86.631,71.83,86.631c11.545,0,20.938-9.393,20.938-20.936  C92.768,55.273,85.105,46.63,75.123,45.042z M11.414,46.399c-0.651,0-1.181-0.53-1.181-1.183V32.195  c0-0.652,0.529-1.183,1.181-1.183div9.528c0.652,0,1.182,0.53,1.182,1.183v12.577c-0.098-0.001-0.193-0.015-0.293-0.015  c-3.121,0-6.076,0.706-8.74,1.937c-0.248-0.184-0.553-0.295-0.885-0.295H11.414z M43.665,91.377c0,1.371-1.115,2.486-2.486,2.486  c-1.37,0-2.485-1.115-2.485-2.486s1.115-2.486,2.485-2.486C42.549,88.891,43.665,90.006,43.665,91.377z M51.393,70.191H11.414  c-0.651,0-1.181-0.529-1.181-1.182V55.988c0-0.652,0.529-1.182,1.181-1.182h42.569c-1.947,3.178-3.09,6.896-3.09,10.889  C50.893,67.24,51.072,68.742,51.393,70.191z M71.83,83.631c-9.891,0-17.938-8.047-17.938-17.936c0-9.891,8.047-17.938,17.938-17.938  s17.938,8.047,17.938,17.938C89.768,75.584,81.721,83.631,71.83,83.631z M11.414,24.524div9.528c2.307,0,4.182-1.877,4.182-4.184  V7.32c0-2.306-1.875-4.183-4.182-4.183H11.414c-2.306,0-4.181,1.876-4.181,4.183V20.34C7.233,22.647,9.108,24.524,11.414,24.524z   M10.233,7.32c0-0.652,0.529-1.183,1.181-1.183div9.528c0.652,0,1.182,0.53,1.182,1.183V20.34c0,0.653-0.529,1.184-1.182,1.184  H11.414c-0.651,0-1.181-0.531-1.181-1.184V7.32z M16.789,16.181c1.296,0,2.351-1.055,2.351-2.352c0-1.296-1.055-2.351-2.351-2.351  s-2.351,1.055-2.351,2.351C14.438,15.126,15.493,16.181,16.789,16.181z M16.789,13.181c0.358,0,0.649,0.291,0.649,0.648  c0,0.358-0.291,0.649-0.649,0.649s-0.649-0.292-0.649-0.649C16.139,13.472,16.43,13.181,16.789,13.181z M25.102,16.181  c1.297,0,2.352-1.055,2.352-2.352c0-1.296-1.055-2.351-2.352-2.351s-2.352,1.055-2.352,2.351  C22.75,15.126,23.805,16.181,25.102,16.181z M25.102,13.181c0.357,0,0.648,0.291,0.648,0.648c0,0.358-0.291,0.649-0.648,0.649  s-0.648-0.292-0.648-0.649C24.454,13.472,24.745,13.181,25.102,13.181z M33.416,16.181c1.296,0,2.351-1.055,2.351-2.352  c0-1.296-1.055-2.351-2.351-2.351s-2.351,1.055-2.351,2.351C31.065,15.126,32.12,16.181,33.416,16.181z M33.416,13.181  c0.358,0,0.649,0.291,0.649,0.648c0,0.358-0.291,0.649-0.649,0.649s-0.649-0.292-0.649-0.649  C32.766,13.472,33.057,13.181,33.416,13.181z M16.789,36.355c-1.296,0-2.351,1.055-2.351,2.351c0,1.297,1.055,2.352,2.351,2.352  s2.351-1.055,2.351-2.352C19.139,37.41,18.084,36.355,16.789,36.355z M16.789,39.355c-0.358,0-0.649-0.291-0.649-0.649  c0-0.357,0.291-0.648,0.649-0.648s0.649,0.291,0.649,0.648C17.438,39.064,17.147,39.355,16.789,39.355z M25.102,36.355  c-1.297,0-2.352,1.055-2.352,2.351c0,1.297,1.055,2.352,2.352,2.352s2.352-1.055,2.352-2.352  C27.454,37.41,26.399,36.355,25.102,36.355z M25.102,39.355c-0.357,0-0.648-0.291-0.648-0.649c0-0.357,0.291-0.648,0.648-0.648  s0.648,0.291,0.648,0.648C25.75,39.064,25.459,39.355,25.102,39.355z M33.416,36.355c-1.296,0-2.351,1.055-2.351,2.351  c0,1.297,1.055,2.352,2.351,2.352s2.351-1.055,2.351-2.352C35.766,37.41,34.711,36.355,33.416,36.355z M33.416,39.355  c-0.358,0-0.649-0.291-0.649-0.649c0-0.357,0.291-0.648,0.649-0.648s0.649,0.291,0.649,0.648  C34.065,39.064,33.774,39.355,33.416,39.355z M16.789,60.148c-1.296,0-2.351,1.055-2.351,2.352s1.055,2.352,2.351,2.352  s2.351-1.055,2.351-2.352S18.084,60.148,16.789,60.148z M16.789,63.148c-0.358,0-0.649-0.291-0.649-0.648s0.291-0.648,0.649-0.648  s0.649,0.291,0.649,0.648S17.147,63.148,16.789,63.148z M25.102,60.148c-1.297,0-2.352,1.055-2.352,2.352s1.055,2.352,2.352,2.352  s2.352-1.055,2.352-2.352S26.399,60.148,25.102,60.148z M25.102,63.148c-0.357,0-0.648-0.291-0.648-0.648s0.291-0.648,0.648-0.648  s0.648,0.291,0.648,0.648S25.459,63.148,25.102,63.148z M33.416,60.148c-1.296,0-2.351,1.055-2.351,2.352s1.055,2.352,2.351,2.352  s2.351-1.055,2.351-2.352S34.711,60.148,33.416,60.148z M33.416,63.148c-0.358,0-0.649-0.291-0.649-0.648s0.291-0.648,0.649-0.648  s0.649,0.291,0.649,0.648S33.774,63.148,33.416,63.148z">
+                                    </path>
+                                </svg>
+                            </div>
+                            <div class="col">
+                                <div class="card-medium-text">1 <br></div>
+                                <div class="card-medium-text"><span style="font-weight: bold;">Gateway</span></div>
+                            </div>
+                            <div class="col">
+                                <i class="fas fa-check fa-2x" style="color: green;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- -------------------------------------------------------------------------------------------------------------------------------------------------------- -->
+        </div>
+    </div>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.4/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
+    <script src="/static/assets/js/main.js"></script>
+    <!--  Chart js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.7.3/dist/Chart.bundle.min.js"></script>
+    <!--Chartist Chart-->
+    <script src="https://cdn.jsdelivr.net/npm/chartist@0.11.0/dist/chartist.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartist-plugin-legend@0.6.2/chartist-plugin-legend.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery.flot@0.8.3/jquery.flot.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flot-pie@1.0.0/src/jquery.flot.pie.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flot-spline@0.0.1/js/jquery.flot.spline.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simpleweather@3.1.0/jquery.simpleWeather.min.js"></script>
+    <script src="/static/assets/js/init/weather-init.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.9.0/dist/fullcalendar.min.js"></script>
+    <script src="/static/assets/js/init/fullcalendar-init.js"></script>
+    <!--Local Stuff-->
+    <script>
+    jQuery(document).ready(function($) {
+        "use strict";
+
+        // Pie chart flotPie1
+        var piedata = [{
+                label: "Desktop visits",
+                data: [
+                    [1, 32]
+                ],
+                color: '#5c6bc0'
+            },
+            {
+                label: "Tab visits",
+                data: [
+                    [1, 33]
+                ],
+                color: '#ef5350'
+            },
+            {
+                label: "Mobile visits",
+                data: [
+                    [1, 35]
+                ],
+                color: '#66bb6a'
+            }
+        ];
+
+        $.plot('#flotPie1', piedata, {
+            series: {
+                pie: {
+                    show: true,
+                    radius: 1,
+                    innerRadius: 0.65,
+                    label: {
+                        show: true,
+                        radius: 2 / 3,
+                        threshold: 1
+                    },
+                    stroke: {
+                        width: 0
+                    }
+                }
+            },
+            grid: {
+                hoverable: true,
+                clickable: true
+            }
+        });
+        // Pie chart flotPie1  End
+        // cellPaiChart
+        var cellPaiChart = [{
+                label: "Direct Sell",
+                data: [
+                    [1, 65]
+                ],
+                color: '#5b83de'
+            },
+            {
+                label: "Channel Sell",
+                data: [
+                    [1, 35]
+                ],
+                color: '#00bfa5'
+            }
+        ];
+        $.plot('#cellPaiChart', cellPaiChart, {
+            series: {
+                pie: {
+                    show: true,
+                    stroke: {
+                        width: 0
+                    }
+                }
+            },
+            legend: {
+                show: false
+            },
+            grid: {
+                hoverable: true,
+                clickable: true
+            }
+
+        });
+        // cellPaiChart End
+        // Line Chart  #flotLine5
+        var newCust = [
+            [0, 3],
+            [1, 5],
+            [2, 4],
+            [3, 7],
+            [4, 9],
+            [5, 3],
+            [6, 6],
+            [7, 4],
+            [8, 10]
+        ];
+
+        var plot = $.plot($('#flotLine5'), [{
+            data: newCust,
+            label: 'New Data Flow',
+            color: '#fff'
+        }], {
+            series: {
+                lines: {
+                    show: true,
+                    lineColor: '#fff',
+                    lineWidth: 2
+                },
+                points: {
+                    show: true,
+                    fill: true,
+                    fillColor: "#ffffff",
+                    symbol: "circle",
+                    radius: 3
+                },
+                shadowSize: 0
+            },
+            points: {
+                show: true,
+            },
+            legend: {
+                show: false
+            },
+            grid: {
+                show: false
+            }
+        });
+        // Line Chart  #flotLine5 End
+        // Traffic Chart using chartist
+        if ($('#traffic-chart').length) {
+            var chart = new Chartist.Line('#traffic-chart', {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                series: [
+                    [0, 18000, 35000, 25000, 22000, 0],
+                    [0, 33000, 15000, 20000, 15000, 300],
+                    [0, 15000, 28000, 15000, 30000, 5000]
+                ]
+            }, {
+                low: 0,
+                showArea: true,
+                showLine: false,
+                showPoint: false,
+                fullWidth: true,
+                axisX: {
+                    showGrid: true
+                }
+            });
+
+            chart.on('draw', function(data) {
+                if (data.type === 'line' || data.type === 'area') {
+                    data.element.animate({
+                        d: {
+                            begin: 2000 * data.index,
+                            dur: 2000,
+                            from: data.path.clone().scale(1, 0).translate(0, data.chartRect.height()).stringify(),
+                            to: data.path.clone().stringify(),
+                            easing: Chartist.Svg.Easing.easeOutQuint
+                        }
+                    });
+                }
+            });
+        }
+        // Traffic Chart using chartist End
+        //Traffic chart chart-js
+        if ($('#TrafficChart').length) {
+            var ctx = document.getElementById("TrafficChart");
+            ctx.height = 150;
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+                    datasets: [{
+                            label: "Visit",
+                            borderColor: "rgba(4, 73, 203,.09)",
+                            borderWidth: "1",
+                            backgroundColor: "rgba(4, 73, 203,.5)",
+                            data: [0, 2900, 5000, 3300, 6000, 3250, 0]
+                        },
+                        {
+                            label: "Bounce",
+                            borderColor: "rgba(245, 23, 66, 0.9)",
+                            borderWidth: "1",
+                            backgroundColor: "rgba(245, 23, 66,.5)",
+                            pointHighlightStroke: "rgba(245, 23, 66,.5)",
+                            data: [0, 4200, 4500, 1600, 4200, 1500, 4000]
+                        },
+                        {
+                            label: "Targeted",
+                            borderColor: "rgba(40, 169, 46, 0.9)",
+                            borderWidth: "1",
+                            backgroundColor: "rgba(40, 169, 46, .5)",
+                            pointHighlightStroke: "rgba(40, 169, 46,.5)",
+                            data: [1000, 5200, 3600, 2600, 4200, 5300, 0]
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    tooltips: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    hover: {
+                        mode: 'nearest',
+                        intersect: true
+                    }
+
+                }
+            });
+        }
+        //Traffic chart chart-js  End
+        // Bar Chart #flotBarChart
+        $.plot("#flotBarChart", [{
+            data: [
+                [0, 18],
+                [2, 8],
+                [4, 5],
+                [6, 13],
+                [8, 5],
+                [10, 7],
+                [12, 4],
+                [14, 6],
+                [16, 15],
+                [18, 9],
+                [20, 17],
+                [22, 7],
+                [24, 4],
+                [26, 9],
+                [28, 11]
+            ],
+            bars: {
+                show: true,
+                lineWidth: 0,
+                fillColor: '#ffffff8a'
+            }
+        }], {
+            grid: {
+                show: false
+            }
+        });
+        // Bar Chart #flotBarChart End
+    });
+    </script>
+</div>
+
+
+{% endblock %}

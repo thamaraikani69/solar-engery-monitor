@@ -1,0 +1,290 @@
+{% extends "inventory/static.html" %}
+{% block body %}
+        
+        <!-- Content -->
+        <div class="content">
+            <!-- Animated -->
+            <div class="animated fadeIn">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <form action="add_support" method="POST">
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">admin</label>
+                                <select shape="semi-round" class="form-control" name="admin">
+                                    {% for i in admin_data %}
+                                    <option value="{{i.id}}">{{i.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Enter the title</label>
+                                <input type="text" name="title" shape="semi-round" placeholder="Name" type="text" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Enter the Remarks</label>
+                                <input type="text" name="remarks" shape="semi-round" placeholder="Name" type="text" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Description</label>
+                                <input placeholder="description" name="description" type="text" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Due date</label>
+                                <input shape="semi-round" name="due_date" placeholder="lattitude and longitude" type="date" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">users</label>
+                                <select name="teams" id="teams" multiple="multiple" class="form-control">
+                                {% for i in user_data %}
+                                    <option value="{{i.id}}">{{i.name}}</option>
+                                  {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <!-- <div class="form-group">
+                                <label for="exampleInputEmail1">Enter UID </label>
+                                <input type="text" placeholder="Email UID" type="text" class="form-control">
+                            </div> -->
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">status</label>
+                                <select shape="semi-round" class="form-control" name="status">
+                                    <option selected="" value="Open">Open</option>
+                                    <option value="Process">Process</option>
+                                    <option value="Hold">Hold</option>
+                                    <option value="Close">Close</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">type</label>
+                                <select shape="semi-round" class="form-control" name="type">
+                                    <option selected="" value="High">High</option>
+                                    <option value="Medium"> Medium</option>
+                                    <option value="Low">Low</option>
+                                </select>
+                            </div>
+                            <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+                            <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+                            <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" rel="stylesheet" />
+
+                            
+                              
+                            
+
+                            <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+                            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.min.js"></script>
+                            
+                            <div class="form-group">
+                                <button class="btn btn-primary" shape="round" status="success" type="submit">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <table class="table table-bordered" id="editableTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Title</th>
+                                    <th>Description</th>
+                                    <th>status</th>
+                                    <th>allotted_time</th>
+                                    <th>completed_on</th>
+                                    <th>remarks</th>
+                                    <th>periority</th>
+                                    <th>due_date</th>
+                                    <th>EDIT</th>
+                                    <th>DELETE</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                                {% for i in data %}
+
+                                
+                                <tr data-id="1">
+                                    <td data-field="id">{{i.id}}</td>
+                                    <td data-field="name">{{i.title}}</td>
+                                    <td data-field="addedon">{{i.description}}</td>
+                                    <td data-field="username">{{i.status}}</td>
+                                    <td data-field="location">{{i.allotted_time}}</td>
+                                    <td data-field="address">{{i.completed_on}}</td>
+                                    <td data-field="lat_lon">{{i.remarks}}</td>
+                                    <td data-field="status">{{i.periority}}</td>
+                                    <td data-field="status">{{i.due_date}}</td>
+                                    <td>
+                                      <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+                                        <a href="edit_support/{{i.id}}" class="button button-small edit" title="Edit">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
+                                    </td>
+                                    <td>
+                                         <form action="delete_support/{{i.id}}" method="POST">
+                                            <button type="submit">delete<i class="fa fa-trash"></i></button>
+                                                
+                                            </a>
+                                        </form>
+                                    </td>
+                                </tr>
+                                
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+    <!-- Scripts -->
+    <!-- Scripts -->
+        <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
+     <script type="text/javascript" src="https://res.cloudinary.com/dxfq3iotg/raw/upload/v1567487539/jquery.tabledit.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.4/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
+    <script src="/static/assets/js/main.js"></script>
+
+    <!-- admin multi drop check box -->
+
+<style type="text/css">
+body {
+  padding: 20px;
+}
+form {
+  max-width: 500px;
+  margin: auto;
+}
+.aweCheckbox {
+  padding-left: 20px;
+}
+.aweCheckbox label {
+  display: inline-block;
+  vertical-align: middle;
+  position: relative;
+  padding: 0 20px 0 10px;
+  cursor: pointer;
+}
+.aweCheckbox label::before {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  width: 17px;
+  height: 17px;
+  left: 0;
+  margin-left: -20px;
+  border: 1px solid #cccccc;
+  border-radius: 3px;
+  background-color: #fff;
+  -webkit-transition: border 0.15s ease-in-out, color 0.15s ease-in-out;
+  -o-transition: border 0.15s ease-in-out, color 0.15s ease-in-out;
+  transition: border 0.15s ease-in-out, color 0.15s ease-in-out;
+}
+.aweCheckbox label::after {
+  display: inline-block;
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  left: 0;
+  top: 0;
+  margin-left: -20px;
+  padding-left: 3px;
+  padding-top: 1px;
+  font-size: 11px;
+  color: #555555;
+}
+.aweCheckbox input[type="checkbox"] {
+  opacity: 0;
+  z-index: 1;
+}
+.aweCheckbox input[type="checkbox"]:focus + label::before {
+  outline: thin dotted;
+  outline: 5px auto -webkit-focus-ring-color;
+  outline-offset: -2px;
+}
+.aweCheckbox input[type="checkbox"]:checked + label::after {
+  font-family: "FontAwesome";
+  content: "\f00c";
+}
+.aweCheckbox input[type="checkbox"]:indeterminate + label::after {
+  display: block;
+  content: "";
+  width: 10px;
+  height: 3px;
+  background-color: #555555;
+  border-radius: 2px;
+  margin-left: -16.5px;
+  margin-top: 7px;
+}
+.aweCheckbox input[type="checkbox"]:disabled + label {
+  opacity: 0.65;
+}
+.aweCheckbox input[type="checkbox"]:disabled + label::before {
+  background-color: #eeeeee;
+  cursor: not-allowed;
+}
+.aweCheckbox.aweCheckbox-circle label::before {
+  border-radius: 50%;
+}
+.aweCheckbox.aweCheckbox-inline {
+  margin-top: 0;
+}
+.aweCheckbox-danger input[type="checkbox"]:checked + label::before {
+  background-color: #d9534f;
+  border-color: #d9534f;
+}
+.aweCheckbox-danger input[type="checkbox"]:checked + label::after {
+  color: #fff;
+}
+.aweCheckbox-danger input[type="checkbox"]:indeterminate + label::before {
+  background-color: #d9534f;
+  border-color: #d9534f;
+}
+.aweCheckbox-danger input[type="checkbox"]:indeterminate + label::after {
+  background-color: #fff;
+}
+input[type="checkbox"].styled:checked + label:after {
+  font-family: 'FontAwesome';
+  content: "\f00c";
+}
+input[type="checkbox"] .styled:checked + label::before {
+  color: #fff;
+}
+input[type="checkbox"] .styled:checked + label::after {
+  color: #fff;
+}
+</style>
+<script type="text/javascript">
+                    $(document).ready(function() {
+  $('#teams').multiselect({
+    templates: { // Use the Awesome Bootstrap Checkbox structure
+      li: '<li class="checkList"><a tabindex="0"><div class="aweCheckbox aweCheckbox-danger"><label for=""></label></div></a></li>'
+    }
+  });
+  $('.multiselect-container div.aweCheckbox').each(function(index) {
+
+    var id = 'multiselect-' + index,
+      $input = $(this).find('input');
+
+    // Associate the label and the input
+    $(this).find('label').attr('for', id);
+    $input.attr('id', id);
+
+    // Remove the input from the label wrapper
+    $input.detach();
+
+    // Place the input back in before the label
+    $input.prependTo($(this));
+
+    $(this).click(function(e) {
+      // Prevents the click from bubbling up and hiding the dropdown
+      e.stopPropagation();
+    });
+
+  });
+});
+</script>
+{% endblock %}

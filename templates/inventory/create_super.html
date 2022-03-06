@@ -1,0 +1,238 @@
+{% extends "inventory/static.html" %}
+{% block body %}
+      
+        <!-- Content -->
+        <div class="content">
+            <!-- Animated -->
+            <div class="animated fadeIn">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <form action="add_superadmin" method="POST">
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Enter the Name</label>
+                                <input type="text" name="name" shape="semi-round" placeholder="Name" type="text" class="form-control" name="name">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Enter Email Id or Username</label>
+                                <input type="text" name="username" placeholder="Email Id or Username" type="text" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Enter the Password</label>
+                                <input type="password" name="password" shape="semi-round" placeholder="Password" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Enter the location</label>
+                                <input type="text" name="location" shape="semi-round" placeholder="location" type="text" class="form-control" name="location">
+                            </div>
+                            <!-- <div class="form-group">
+                                <label for="exampleInputEmail1">Enter UID </label>
+                                <input type="text" placeholder="Email UID" type="text" class="form-control">
+                            </div> -->
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">status</label>
+                                <select shape="semi-round" class="form-control" name="status">
+                                    <option selected="" value="active">active</option>
+                                    <option value="inactive">inactive</option>
+                                </select>
+                                
+                            </div>
+                            <button class="btn btn-primary" shape="round" status="success" type="submit">Submit</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <table class="table table-bordered" id="editableTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>NAME</th>
+                                    <th>ADDED ON</th>
+                                    <th>USERNAME</th>
+                                    <th>PASSWORD</th>
+                                    <th>LOCATION</th>
+                                    <th>STATUS</th>
+                                    <th>LAST CHANGE</th>
+                                    <th>EDIT</th>
+                                    <th>DELETE</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in data %}
+                                <tr data-id="1">
+                                    <td data-field="id">{{i.id}}</td>
+                                    <td data-field="name">{{i.name}}</td>
+                                    <td data-field="addedon">{{i.addedon}}</td>
+                                    <td data-field="username">{{i.username}}</td>
+                                    <td data-field="password"></td>
+                                    <td data-field="location">{{i.location}}</td>
+                                    <td data-field="status">{{i.status}}</td>
+                                    <td data-field="lastchange">{{i.lastchange}}</td>
+                                    <td>
+                                        <a href="edit_super_admin/{{i.id}}" class="button button-small edit" title="Edit">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
+                                    </td>
+                                     <td>
+                                         <form action="delete_super_admin/{{i.id}}" method="POST">
+                                            <button type="submit">delete<i class="fa fa-trash"></i></button>
+                                                
+                                            </a>
+                                        </form>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        
+<style type="text/css">
+body {
+  padding: 20px;
+}
+form {
+  max-width: 500px;
+  margin: auto;
+}
+.aweCheckbox {
+  padding-left: 20px;
+}
+.aweCheckbox label {
+  display: inline-block;
+  vertical-align: middle;
+  position: relative;
+  padding: 0 20px 0 10px;
+  cursor: pointer;
+}
+.aweCheckbox label::before {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  width: 17px;
+  height: 17px;
+  left: 0;
+  margin-left: -20px;
+  border: 1px solid #cccccc;
+  border-radius: 3px;
+  background-color: #fff;
+  -webkit-transition: border 0.15s ease-in-out, color 0.15s ease-in-out;
+  -o-transition: border 0.15s ease-in-out, color 0.15s ease-in-out;
+  transition: border 0.15s ease-in-out, color 0.15s ease-in-out;
+}
+.aweCheckbox label::after {
+  display: inline-block;
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  left: 0;
+  top: 0;
+  margin-left: -20px;
+  padding-left: 3px;
+  padding-top: 1px;
+  font-size: 11px;
+  color: #555555;
+}
+.aweCheckbox input[type="checkbox"] {
+  opacity: 0;
+  z-index: 1;
+}
+.aweCheckbox input[type="checkbox"]:focus + label::before {
+  outline: thin dotted;
+  outline: 5px auto -webkit-focus-ring-color;
+  outline-offset: -2px;
+}
+.aweCheckbox input[type="checkbox"]:checked + label::after {
+  font-family: "FontAwesome";
+  content: "\f00c";
+}
+.aweCheckbox input[type="checkbox"]:indeterminate + label::after {
+  display: block;
+  content: "";
+  width: 10px;
+  height: 3px;
+  background-color: #555555;
+  border-radius: 2px;
+  margin-left: -16.5px;
+  margin-top: 7px;
+}
+.aweCheckbox input[type="checkbox"]:disabled + label {
+  opacity: 0.65;
+}
+.aweCheckbox input[type="checkbox"]:disabled + label::before {
+  background-color: #eeeeee;
+  cursor: not-allowed;
+}
+.aweCheckbox.aweCheckbox-circle label::before {
+  border-radius: 50%;
+}
+.aweCheckbox.aweCheckbox-inline {
+  margin-top: 0;
+}
+.aweCheckbox-danger input[type="checkbox"]:checked + label::before {
+  background-color: #d9534f;
+  border-color: #d9534f;
+}
+.aweCheckbox-danger input[type="checkbox"]:checked + label::after {
+  color: #fff;
+}
+.aweCheckbox-danger input[type="checkbox"]:indeterminate + label::before {
+  background-color: #d9534f;
+  border-color: #d9534f;
+}
+.aweCheckbox-danger input[type="checkbox"]:indeterminate + label::after {
+  background-color: #fff;
+}
+input[type="checkbox"].styled:checked + label:after {
+  font-family: 'FontAwesome';
+  content: "\f00c";
+}
+input[type="checkbox"] .styled:checked + label::before {
+  color: #fff;
+}
+input[type="checkbox"] .styled:checked + label::after {
+  color: #fff;
+}
+</style>
+<script type="text/javascript">
+                    $(document).ready(function() {
+  $('#teams').multiselect({
+    templates: { // Use the Awesome Bootstrap Checkbox structure
+      li: '<li class="checkList"><a tabindex="0"><div class="aweCheckbox aweCheckbox-danger"><label for=""></label></div></a></li>'
+    }
+  });
+  $('.multiselect-container div.aweCheckbox').each(function(index) {
+
+    var id = 'multiselect-' + index,
+      $input = $(this).find('input');
+
+    // Associate the label and the input
+    $(this).find('label').attr('for', id);
+    $input.attr('id', id);
+
+    // Remove the input from the label wrapper
+    $input.detach();
+
+    // Place the input back in before the label
+    $input.prependTo($(this));
+
+    $(this).click(function(e) {
+      // Prevents the click from bubbling up and hiding the dropdown
+      e.stopPropagation();
+    });
+
+  });
+});
+</script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+    <!-- Scripts -->
+    <!-- Scripts -->
+        <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
+     <script type="text/javascript" src="https://res.cloudinary.com/dxfq3iotg/raw/upload/v1567487539/jquery.tabledit.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.4/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
+    <script src="/static/assets/js/main.js"></script>
+{% endblock %}

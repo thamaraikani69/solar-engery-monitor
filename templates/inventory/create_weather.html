@@ -1,0 +1,140 @@
+{% extends "inventory/static.html" %}
+{% block body %}
+      
+    <!-- {{data}} -->
+        <div class="content">
+            <!-- Animated -->
+            <div class="animated fadeIn">
+                {% if access=="super_admin" %}
+                <div class="row">
+                    <div class="col-lg-6">
+                        <form action="add_weather" method="POST">
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Enter the Weather</label>
+                                <input type="text" shape="semi-round" placeholder="Name" type="text" class="form-control" name="weather">
+                            </div>
+                             <div class="form-group">
+                                <label for="exampleInputEmail1">Enter Capacity</label>
+                                <input type="text" shape="semi-round" placeholder="Name" type="text" class="form-control" name="capacity">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Enter Equipment Id</label>
+                                <input type="text" shape="semi-round" placeholder="equipment_id" type="text" class="form-control" name="equipment_id">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Enter slave Id</label>
+                                <input type="text" shape="semi-round" placeholder="slave_id" type="text" class="form-control" name="slave_id">
+                            </div>
+                             <div class="form-group">
+                                <label for="exampleInputEmail1">Enter the Admin Group</label>
+                                 <select name="groupadmin" onclick="admin_data_(this.value);">
+                                    {% for i in admingroup_data %}
+                                        <option value="{{i.id}}">{{i.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                              <div class="form-group">
+                                <label for="exampleInputEmail1">Enter the Admin Name</label>
+                                 <select name="admin" id="admin">
+                                   
+                                </select>
+                            </div>
+                         
+                          
+                          
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">status</label>
+                                <select shape="semi-round" class="form-control" name="status">
+                                    <option selected="" value="active">active</option>
+                                    <option value="inactive">inactive</option>
+                                </select>
+                                
+                            </div>
+                            <button class="btn btn-primary" shape="round" status="success" type="submit">Submit</button>
+                        </form>
+                    </div>
+                </div>
+                {% endif %}
+                <div class="row">
+                    <div class="col">
+                        <table class="table table-bordered " style="background-color: white"id="example">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>NAME</th>
+                                    <th>ADDED ON</th>
+                                    <!-- <th>CAPACITY</th> -->
+                                    <th>ADMIN</th>
+                                    <th>STATUS</th>
+                                    <th>Equipment Id</th>
+                                    <th>Slave Id</th>
+                                    <th>Last change</th>
+                                    {% if access=="super_admin" %}
+                                    <th>EDIT</th>
+                                    <th>DELETE</th>
+                                    {% endif %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in data %}
+                               <tr data-id="1">
+                                    <td data-field="{{i.id}}">{{i.id}}</td>
+                                    <td data-field="{{i.w_w}}">{{i.w_w}}</td>
+                                    <td data-field="{{i.addedon}}">{{i.addedon}}</td>
+                                    <!-- <td data-field="{{i.capacity}}">{{i.capacity}}</td> -->
+                                    <td data-field="{{i.admin}}">{{i.name}}</td>
+                                    <td data-field="{{i.status}}">{{i.status}}</td>
+                                    <td data-field="{{i.status}}">{{i.equipment_id}}</td>
+                                    <td data-field="{{i.status}}">{{i.slave_id}}</td>
+                                    <td data-field="{{i.lastchange}}">{{i.lastchange}}</td>
+                                    {% if access=="super_admin" %}
+                                    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+                                    <td>
+                                        <a href="edit_weather/{{i.id}}" class="button button-small edit" title="Edit">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <form action="delete_weather/{{i.id}}" method="POST">
+                                            <button type="submit">delete<i class="fa fa-trash"></i></button>
+                                                
+                                            </a>
+                                        </form>
+                                    </td>
+                                    {% endif %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                      
+                    </div>
+                </div>
+            </div>
+        </div>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
+     <script type="text/javascript" src="https://res.cloudinary.com/dxfq3iotg/raw/upload/v1567487539/jquery.tabledit.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.4/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
+    <script src="/static/assets/js/main.js"></script>
+<script type="text/javascript">
+                                function admin_data_(value) 
+                                {
+                                let details_data = {{ admin_name_data | tojson }};
+                                    var list = document.getElementById("admin");
+                                    opt=""
+                                    for (let data=0;data<details_data.length;data++) 
+                                    {   
+                                        if(details_data[data]['admin_grp_id']==value)
+                                        {   
+                                            
+                                            opt+='<option value="'+details_data[data]['id']+'">'+details_data[data]['name']+'</option>'
+                                        }
+                                    }
+                                    $('#admin').html(opt)
+                                   
+                                }
+                            </script>
+{% endblock %}

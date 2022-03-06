@@ -1,0 +1,439 @@
+{% extends "inventory/static.html" %}
+{% block body %}
+        <div class="content">
+            <!-- Animated -->
+            <div class="animated fadeIn">
+                <!-- {% if access=="super_admin" %} -->
+                <!-- <div class="row">
+                    <div class="col-lg-6">
+                        <form action="add_inventor" method="POST">
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Enter the Name</label>
+                                <input type="text" shape="semi-round" name="name" placeholder="Name" type="text" class="form-control" name="name">
+                            </div>
+                             <div class="form-group">
+                                <label for="exampleInputEmail1">Enter Capacity</label>
+                                <input type="text" shape="semi-round" name="capacity" placeholder="Name" type="text" class="form-control" name="name">
+                            </div>
+                             <div class="form-group col-4">
+                                <label for="exampleInputEmail1">Select date</label>
+                                <input type="date" shape="semi-round" name="date" placeholder="Name" type="text" class="form-control" name="name">
+                            </div>
+                              <div class="form-group">
+                                <label for="exampleInputEmail1">Enter the Admin Group</label>
+                                 <select name="groupadmin">
+                                    {% for i in admingroup_data %}
+                                        <option value="{{i.id}}">{{i.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                             <div class="form-group">
+                                <label for="exampleInputEmail1">Admin Name</label>
+                                 <select name="admin_name">
+                                    {% for i in admin_data %}
+                                    <option value="{{i.id}}">{{i.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                         
+                          
+                          
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">status</label>
+                                <select shape="semi-round" class="form-control" name="status">
+                                    <option selected="" value="active">active</option>
+                                    <option value="inactive">inactive</option>
+                                </select>
+                                
+                            </div>
+                            <button class="btn btn-primary" shape="round" status="success" type="submit">Submit</button>
+                        </form>
+                    </div>
+                </div> -->
+                <!-- {% endif %} -->
+                <div class="row">
+                    <div class="col">
+                        <table class="table table-bordered" id="editableTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>api_key</th>
+                                    <th>S_NO</th>
+                                    <th>IP</th>
+                                    <th>DID</th>
+                                    <th>EID</th>
+                                    <th>ID</th>
+                                    <th>FC</th>
+                                    <th>ADDRESS</th>
+                                    <th>QUANTITY</th>
+                                    <th>TIME_STAMP</th>
+                                    <th>FIELD0</th>
+                                    <th>FIELD1</th>
+                                    <th>FIELD2</th>
+                                    <th>FIELD3</th>
+                                    <th>FIELD4</th>
+                                    <th>FIELD5</th>
+                                    <th>FIELD6</th>
+                                    <th>FIELD7</th>
+                                    <th>FIELD8</th>
+                                    <th>FIELD9</th>
+                                    <th>FIELD10</th>
+                                    <th>FIELD11</th>
+                                    <th>FIELD12</th>
+                                    <th>FIELD13</th>
+                                    <th>FIELD14</th>
+                                    <th>FIELD15</th>
+                                    <th>FIELD16</th>
+                                    <th>FIELD17</th>
+                                    <th>FIELD18</th>
+                                    <th>FIELD19</th>
+                                    <th>FIELD20</th>
+                                    <th>FIELD21</th>
+                                    <th>FIELD22</th>
+                                    <th>FIELD23</th>
+                                    <th>FIELD24</th>
+                                    <th>FIELD25</th>
+                                    <th>FIELD26</th>
+                                    <th>FIELD27</th>
+                                    <th>FIELD28</th>
+                                    <th>FIELD29</th>
+                                    <th>FIELD30</th>
+                                    <th>FIELD31</th>
+                                    <th>FIELD32</th>
+                                    <th>FIELD33</th>
+                                    <th>FIELD34</th>
+                                    <th>FIELD35</th>
+                                    <th>FIELD36</th>
+                                    <th>FIELD37</th>
+                                    <th>FIELD38</th>
+                                    <th>FIELD39</th>
+                                    <th>Last change</th>
+                                    {% if access=="controller" %}
+                                    <th>Edit</th>
+                                    <th>Delete</th>
+                                    {% endif %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                                {% for i in data %}
+                                    <tr data-id="1">
+                                        <td data-field="id">{{i.my_id}}</td>
+                                          <td data-field="api_key">{{i.api_key}}</td>
+                                          <td data-field="S_NO">{{i.S_NO}}</td>
+                                          <td data-field="IP">{{i.IP}}</td>
+                                          <td data-field="DID">{{i.DID}}</td>
+                                          <td data-field="EID">{{i.EID}}</td>
+                                          <td data-field="ID">{{i.ID}}</td>
+                                          <td data-field="FC">{{i.FC}}</td>
+                                          <td data-field="ADDRESS">{{i.ADDRESS}}</td>
+                                          <td data-field="QUANTITY">{{i.QUANTITY}}</td>
+                                          <td data-field="TIME_STAMP">{{i.TIME_STAMP}}</td>
+                                          <td data-field="FIELD0">{{i.FIELD0}}</td>
+                                          <td data-field="FIELD1">{{i.FIELD1}}</td>
+                                          <td data-field="FIELD2">{{i.FIELD2}}</td>
+                                          <td data-field="FIELD3">{{i.FIELD3}}</td>
+                                          <td data-field="FIELD4">{{i.FIELD4}}</td>
+                                          <td data-field="FIELD5">{{i.FIELD5}}</td>
+                                          <td data-field="FIELD6">{{i.FIELD6}}</td>
+                                          <td data-field="FIELD7">{{i.FIELD7}}</td>
+                                          <td data-field="FIELD8">{{i.FIELD8}}</td>
+                                          <td data-field="FIELD9">{{i.FIELD9}}</td>
+                                          <td data-field="FIELD10">{{i.FIELD10}}</td>
+                                          <td data-field="FIELD11">{{i.FIELD11}}</td>
+                                          <td data-field="FIELD12">{{i.FIELD12}}</td>
+                                          <td data-field="FIELD13">{{i.FIELD13}}</td>
+                                          <td data-field="FIELD14">{{i.FIELD14}}</td>
+                                          <td data-field="FIELD15">{{i.FIELD15}}</td>
+                                          <td data-field="FIELD16">{{i.FIELD16}}</td>
+                                          <td data-field="FIELD17">{{i.FIELD17}}</td>
+                                          <td data-field="FIELD18">{{i.FIELD18}}</td>
+                                          <td data-field="FIELD19">{{i.FIELD19}}</td>
+                                          <td data-field="FIELD20">{{i.FIELD20}}</td>
+                                          <td data-field="FIELD21">{{i.FIELD21}}</td>
+                                          <td data-field="FIELD22">{{i.FIELD22}}</td>
+                                          <td data-field="FIELD23">{{i.FIELD23}}</td>
+                                          <td data-field="FIELD24">{{i.FIELD24}}</td>
+                                          <td data-field="FIELD25">{{i.FIELD25}}</td>
+                                          <td data-field="FIELD26">{{i.FIELD26}}</td>
+                                          <td data-field="FIELD27">{{i.FIELD27}}</td>
+                                          <td data-field="FIELD28">{{i.FIELD28}}</td>
+                                          <td data-field="FIELD29">{{i.FIELD29}}</td>
+                                          <td data-field="FIELD30">{{i.FIELD30}}</td>
+                                          <td data-field="FIELD31">{{i.FIELD31}}</td>
+                                          <td data-field="FIELD32">{{i.FIELD32}}</td>
+                                          <td data-field="FIELD33">{{i.FIELD33}}</td>
+                                          <td data-field="FIELD34">{{i.FIELD34}}</td>
+                                          <td data-field="FIELD35">{{i.FIELD35}}</td>
+                                          <td data-field="FIELD36">{{i.FIELD36}}</td>
+                                          <td data-field="FIELD37">{{i.FIELD37}}</td>
+                                          <td data-field="FIELD38">{{i.FIELD38}}</td>
+                                          <td data-field="FIELD39">{{i.FIELD39}}</td>
+                                          <td data-field="FIELD39">{{i.lastchange}}</td>
+                                        {% if access=="controller" %}
+                                        <td>
+                                            <a class="button button-small edit" title="Edit">
+                                                <i class="fa fa-pencil"></i>
+                                            </a>
+                                            <a class="button button-small edit" title="Delete">
+                                                <i class="fa fa-trash"></i>
+                                            </a>
+                                        </td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <script type="text/javascript">
+                        (function($, window, document, undefined) {
+                            var pluginName = "editable",
+                                defaults = {
+                                    keyboard: true,
+                                    dblclick: true,
+                                    button: true,
+                                    buttonSelector: ".edit",
+                                    maintainWidth: true,
+                                    dropdowns: {},
+                                    edit: function() {},
+                                    save: function() {},
+                                    cancel: function() {}
+                                };
+
+                            function editable(element, options) {
+                                this.element = element;
+                                this.options = $.extend({}, defaults, options);
+
+                                this._defaults = defaults;
+                                this._name = pluginName;
+
+                                this.init();
+                            }
+
+                            editable.prototype = {
+                                init: function() {
+                                    this.editing = false;
+
+                                    if (this.options.dblclick) {
+                                        $(this.element)
+                                            .css('cursor', 'pointer')
+                                            .bind('dblclick', this.toggle.bind(this));
+                                    }
+
+                                    if (this.options.button) {
+                                        $(this.options.buttonSelector, this.element)
+                                            .bind('click', this.toggle.bind(this));
+                                    }
+                                },
+
+                                toggle: function(e) {
+                                    e.preventDefault();
+
+                                    this.editing = !this.editing;
+
+                                    if (this.editing) {
+                                        this.edit();
+                                    } else {
+                                        this.save();
+                                    }
+                                },
+
+                                edit: function() {
+                                    var instance = this,
+                                        values = {};
+
+                                    $('td[data-field]', this.element).each(function() {
+                                        var input,
+                                            field = $(this).data('field'),
+                                            value = $(this).text(),
+                                            width = $(this).width();
+
+                                        values[field] = value;
+
+                                        $(this).empty();
+
+                                        if (instance.options.maintainWidth) {
+                                            $(this).width(width);
+                                        }
+
+                                        if (field in instance.options.dropdowns) {
+                                            input = $('<select></select>');
+
+                                            for (var i = 0; i < instance.options.dropdowns[field].length; i++) {
+                                                $('<option></option>')
+                                                    .text(instance.options.dropdowns[field][i])
+                                                    .appendTo(input);
+                                            };
+
+                                            input.val(value)
+                                                .data('old-value', value)
+                                                .dblclick(instance._captureEvent);
+                                        } else {
+                                            input = $('<input type="text" />')
+                                                .val(value)
+                                                .data('old-value', value)
+                                                .dblclick(instance._captureEvent);
+                                        }
+
+                                        input.appendTo(this);
+
+                                        if (instance.options.keyboard) {
+                                            input.keydown(instance._captureKey.bind(instance));
+                                        }
+                                    });
+
+                                    this.options.edit.bind(this.element)(values);
+                                },
+
+                                save: function() {
+                                    var instance = this,
+                                        values = {};
+
+                                    $('td[data-field]', this.element).each(function() {
+                                        var value = $(':input', this).val();
+
+                                        values[$(this).data('field')] = value;
+
+                                        $(this).empty()
+                                            .text(value);
+                                    });
+
+                                    this.options.save.bind(this.element)(values);
+                                },
+
+                                cancel: function() {
+                                    var instance = this,
+                                        values = {};
+
+                                    $('td[data-field]', this.element).each(function() {
+                                        var value = $(':input', this).data('old-value');
+
+                                        values[$(this).data('field')] = value;
+
+                                        $(this).empty()
+                                            .text(value);
+                                    });
+
+                                    this.options.cancel.bind(this.element)(values);
+                                },
+
+                                _captureEvent: function(e) {
+                                    e.stopPropagation();
+                                },
+
+                                _captureKey: function(e) {
+                                    if (e.which === 13) {
+                                        this.editing = false;
+                                        this.save();
+                                    } else if (e.which === 27) {
+                                        this.editing = false;
+                                        this.cancel();
+                                    }
+                                }
+                            };
+
+                            $.fn[pluginName] = function(options) {
+                                return this.each(function() {
+                                    if (!$.data(this, "plugin_" + pluginName)) {
+                                        $.data(this, "plugin_" + pluginName,
+                                            new editable(this, options));
+                                    }
+                                });
+                            };
+
+                        })(jQuery, window, document);
+
+                        editTable();
+
+                        //custome editable starts
+                        function editTable() {
+
+                            $(function() {
+                                var pickers = {};
+
+                                $('table tr').editable({
+                                    dropdowns: {
+                                        sex: ['Male', 'Female']
+                                    },
+                                    edit: function(values) {
+                                        $(".edit i", this)
+                                            .removeClass('fa-pencil')
+                                            .addClass('fa-save')
+                                            .attr('title', 'Save');
+
+                                        pickers[this] = new Pikaday({
+                                            field: $("td[data-field=birthday] input", this)[0],
+                                            format: 'MMM D, YYYY'
+                                        });
+                                    },
+                                    save: function(values) {
+                                        $(".edit i", this)
+                                            .removeClass('fa-save')
+                                            .addClass('fa-pencil')
+                                            .attr('title', 'Edit');
+
+                                        if (this in pickers) {
+                                            pickers[this].destroy();
+                                            delete pickers[this];
+                                        }
+                                    },
+                                    cancel: function(values) {
+                                        $(".edit i", this)
+                                            .removeClass('fa-save')
+                                            .addClass('fa-pencil')
+                                            .attr('title', 'Edit');
+
+                                        if (this in pickers) {
+                                            pickers[this].destroy();
+                                            delete pickers[this];
+                                        }
+                                    }
+                                });
+                            });
+
+                        }
+
+                        $(".add-row").click(function() {
+                            $("#editableTable").find("tbody tr:first").before("<tr><td data-field='name'></td><td data-field='name'></td><td data-field='name'></td><td data-field='name'></td><td><a class='button button-small edit' title='Edit'><i class='fa fa-pencil'></i></a> <a class='button button-small' title='Delete'><i class='fa fa-trash'></i></a></td></tr>");
+                            editTable();
+                            setTimeout(function() {
+                                $("#editableTable").find("tbody tr:first td:last a[title='Edit']").click();
+                            }, 200);
+
+                            setTimeout(function() {
+                                $("#editableTable").find("tbody tr:first td:first input[type='text']").focus();
+                            }, 300);
+
+                            $("#editableTable").find("a[title='Delete']").unbind('click').click(function(e) {
+                                $(this).closest("tr").remove();
+                            });
+
+                        });
+
+                        function myFunction() {
+
+                        }
+
+                        $("#editableTable").find("a[title='Delete']").click(function(e) {
+                            var x;
+                            if (confirm("Are you sure you want to delete entire row?") == true) {
+                                $(this).closest("tr").remove();
+                            } else {
+
+                            }
+                        });
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
+     <script type="text/javascript" src="https://res.cloudinary.com/dxfq3iotg/raw/upload/v1567487539/jquery.tabledit.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.4/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
+    <script src="/static/assets/js/main.js"></script>
+
+
+{% endblock %}

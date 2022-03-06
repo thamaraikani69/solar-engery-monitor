@@ -1,0 +1,304 @@
+{% extends "inventory/static.html" %}
+{% block body %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer"
+/>
+<style>
+    .blink {
+        animation: blink 2s steps(5, start) infinite;
+        -webkit-animation: blink 1s steps(5, start) infinite;
+    }
+    
+    @keyframes blink {
+        to {
+            visibility: hidden;
+        }
+    }
+    
+    @-webkit-keyframes blink {
+        to {
+            visibility: hidden;
+        }
+    }
+</style>
+ 
+<!-- Animated -->
+     <div class="row">
+        {% set em_3=namespace(value=0) %}
+        {% set em_2=namespace(value=0) %}
+        {% set em_1=namespace(value=0) %}
+        {% for i in inverter_data%}
+        {% for j in inv_sl_data %}
+                {% if (i.slave_id |float == j.ID[0] |float) and (i.equipment_id|float == j.EID[0]|float) %}
+                    {% if j.connect_status[0] != 'offline' %}
+
+                        {% if (i.name=='ICR 1 - INVERTER 1') or (i.name=='ICR 1 - INVERTER 2') or (i.name=='ICR 1 - INVERTER 3') %}
+                            
+                            {% set em_1.value = (em_1.value + (j.FIELD31[1]|float /1000)) %}
+
+                        {% elif (i.name=='ICR 2 - INVERTER 4') or (i.name=='ICR 2 - INVERTER 5') or (i.name=='ICR 2 - INVERTER 6') %}
+                            {% set em_2.value = (em_2.value + (j.FIELD31[1]|float/1000)) %}
+                        {% endif %}
+                        {% set em_3.value = (em_3.value + (j.FIELD31[1]|float/1000)) %}
+                        
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+
+        {% for i in eng_data %}
+        {% for j in eng_sl_data %}
+        {% if (i.slave_id |float == j.ID[0] |float) and (i.equipment_id|float == j.EID[0]|float) %}
+      
+         <div class="col-3">
+        <div class="card" style="width: 18rem;margin-left: 10px">
+            <div class="card-body">
+
+                {% if j.connect_status[0] == 'offline' %}
+                <div class="card-header">{{i.EM_id}}
+                    <i class="fas fa-signal" style="color:red"></i>
+                </div>
+                <p class="card-text">0 <span style="font-size: bold">kW</span><br>
+                    Current Power<br>
+                    0 MWh<br>
+                    Generation today</p>
+                {% else %}
+                <div class="card-header">{{i.EM_id}}
+                    <i class="fas fa-signal" style="color:green"></i>
+                </div>
+
+                <p class="card-text">{% if j.FIELD8[1]|int >=1000 %} {{'%0.2f'|format(j.FIELD8[1]/1000)}} <span style="font-size: bold">MW</span> {% else %}{{'%0.2f'|format(j.FIELD8[1])}} <span style="font-size: bold">kW</span> {% endif %}<br>
+                    Current Power<br>
+                    
+                    {% if (i.EM_id=='EM 1- ICR 1') %}
+                        {{'%0.2f'|format(em_1.value/1000)}}
+                    {% elif (i.EM_id=='EM 2 - ICR 2') %}
+                        {{'%0.2f'|format(em_2.value/1000)}}
+                    {% elif (i.EM_id=='EM 3 - MCR') %}
+                        {{'%0.2f'|format((em_3.value)/1000)}}
+                    {% endif %}
+                     MWh<br>
+                    Generation today</p>
+                <div class="card-footer text-muted">
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#exampleModals_{{j.my_id[0]}}">Parameter readings</a></button>
+                    <div class="modal fade" id="exampleModals_{{j.my_id[0]}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">All DC SLD in</h5>
+                                    <select>
+                                        <option>{{i.EM_id}}</option>
+                                    </select>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col">
+                                            <table class="ui celled table">
+                                                <thead class="">
+                                                    <tr class="">
+                                                        <th class="">Parameters</th>
+                                                        <th class="">Values</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="">
+                                                    <tr class="">
+                                                        <td class="">CURRENT_TOTAL</td>
+                                                        <td class="">{{j.FIELD20[0]}} A</td>
+                                                    </tr>
+                                                    <tr class="">
+                                                        <td class="">C_R_PHASE</td>
+                                                        <td class="">{{j.FIELD14[0]}} A</td>
+                                                    </tr>
+                                                    <tr class="">
+                                                        <td class="">C_Y_PHASE</td>
+                                                        <td class="">{{j.FIELD16[0]}} A</td>
+                                                    </tr>
+                                                    <tr class="">
+                                                        <td class="">C_B_PHASE</td>
+                                                        <td class="">{{j.FIELD18[0]}} A</td>
+                                                    </tr>
+                                                    <tr class="">
+                                                        <td class="">Frequency</td>
+                                                        <td class="">{{j.FIELD32[1]}} Hz</td>
+                                                    </tr>
+                                                    <tr class="">
+                                                        <td class="">PF_AVG</td>
+                                                        <td class="">{{j.FIELD0[1]}}</td>
+                                                    </tr>
+                                                    <tr class="">
+                                                        <td class="">PF_R_PHASE</td>
+                                                        <td class="">{{j.FIELD34[0]}}</td>
+                                                    </tr>
+                                                    <tr class="">
+                                                        <td class="">PF_Y_PHASE</td>
+                                                        <td class="">{{j.FIELD36[0]}}</td>
+                                                    </tr>
+                                                    <tr class="">
+                                                        <td class="">PF_B_PHASE</td>
+                                                        <td class="">{{j.FIELD38[0]}} </td>
+                                                    </tr>
+                                                    <tr class="">
+                                                        <td class="">VAR_R_PHASE</td>
+                                                        <td class="">{{j.FIELD10[1]}} kVAr</td>
+                                                    </tr>
+                                                    <tr class="">
+                                                        <td class="">VAR_Y_PHASE</td>
+                                                        <td class="">{{j.FIELD12[1]}} kVAr</td>
+                                                    </tr>
+                                                    <tr class="">
+                                                        <td class="">VAR_B_PHASE</td>
+                                                        <td class="">{{j.FIELD14[1]}} kVAr</td>
+                                                    </tr>
+                                                    <tr class="">
+                                                        <td class="">VAR_TOTAL</td>
+                                                        <td class="">{{j.FIELD16[1]}}kVAr</td>
+                                                    </tr>
+                                                    <tr class="">
+                                                        <td class="">VA_R_PHASE</td>
+                                                        <td class="">{{j.FIELD18[1]}} kVA</td>
+                                                    </tr>
+                                                    <tr class="">
+                                                        <td class="">VA_Y_PHASE</td>
+                                                        <td class="">{{j.FIELD20[1]}} kVA</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col">
+                                            <table class="ui celled table">
+                                                <thead class="">
+                                                    <tr class="">
+                                                        <th class="">Parameters</th>
+                                                        <th class="">Values</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="">
+                                                    <tr class="">
+                                                        <td class="">VA_B_PHASE</td>
+                                                        <td class="">{{j.FIELD22[1]}} kVA</td>
+                                                    </tr>
+                                                    <tr class="">
+                                                        <td class="">VA_TOTAL</td>
+                                                        <td class="">{{j.FIELD24[1]}} KVA</td>
+                                                    </tr>
+                                                    <tr class="">
+                                                        <td class="">VRY_PHASE</td>
+                                                        <td class="">{{j.FIELD0[0]}} V</td>
+                                                    </tr>
+                                                    <tr class="">
+                                                        <td class="">VYB_PHASE</td>
+                                                        <td class="">{{j.FIELD2[0]}} V</td>
+                                                    </tr>
+                                                    <tr class="">
+                                                        <td class="">VBR_PHASE</td>
+                                                        <td class="">{{j.FIELD4[0]}} v</td>
+                                                    </tr>
+                                                    <tr class="">
+                                                        <td class="warning">VLN_AVG</td>
+                                                        <td class="">{{j.FIELD6[0]}} v</td>
+                                                    </tr>
+                                                    <tr class="">
+                                                        <td class="">VR_PHASE</td>
+                                                        <td class="warning">{{j.FIELD8[0]}} v</td>
+                                                    </tr>
+                                                    <tr class="">
+                                                        <td class="">VY_PHASE</td>
+                                                        <td class="">{{j.FIELD10[0]}} v</td>
+                                                    </tr>
+                                                    <tr class="">
+                                                        <td class="">VB_PHASE</td>
+                                                        <td class="">{{j.FIELD12[0]}} v</td>
+                                                    </tr>
+                                                    <tr class="">
+                                                        <td class="">WATTS_R_PHASE</td>
+                                                        <td class="">{{j.FIELD2[1]}} kW</td>
+                                                    </tr>
+                                                    <tr class="">
+                                                        <td class="">WATTS_Y_PHASE</td>
+                                                        <td class="">{{j.FIELD4[1]}} kW</td>
+                                                    </tr>
+                                                    <tr class="">
+                                                        <td class="">WATTS_B_PHASE</td>
+                                                        <td class="">{{j.FIELD6[1]}} kW</td>
+                                                    </tr>
+                                                    <tr class="">
+                                                        <td class="">WATT_TOTAL</td>
+                                                        <td class="">{{j.FIELD8[1]}} kW</td>
+                                                    </tr>
+                                                    <tr class="">
+                                                        <td class="">VAH_DELIVERED</td>
+                                                        <td class=""> {{j.FIELD2[2]}}kWh</td>
+                                                    </tr>
+                                                     <tr class="">
+                                                        <td class="">WH_DELIVERED</td>
+                                                        <td class=""> {{j.FIELD0[2]}}kWh</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endfor %}
+    <div class="row">
+        <div class="card-group" style="margin-top: 50px;margin-left:22px">
+            <div class="card" style="width:1400px;margin-left: 22px">
+                <div class="card-body">
+                    <h5 class="card-header" style="text-align: center;">HT BREAKER STATUS</h5>
+                    <div class="row">
+                        {% for i in vcb_check_data %}
+                        <div class="col-4">
+                            <div class="card text-center" style="width: 18rem;margin-left: 22px">
+                                <div class="card-body">
+                                    <h5 class="card-header">{{i['vcb']}}</h5>
+                                    {% if i['switch'] == 'ON' %}
+                                        <p class="card-text"><i class="fas fa-circle blink fa-3x" style="color:green"></i></p>
+                                    {% else %}
+                                        <p class="card-text"><i class="fas fa-circle blink fa-3x" style="color:red"></i></p>
+                                    {% endif %}
+
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+     <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.4/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
+    <script src="/static/assets/js/main.js"></script>
+    <!--  Chart js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.7.3/dist/Chart.bundle.min.js"></script>
+    <!--Chartist Chart-->
+    <script src="https://cdn.jsdelivr.net/npm/chartist@0.11.0/dist/chartist.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartist-plugin-legend@0.6.2/chartist-plugin-legend.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery.flot@0.8.3/jquery.flot.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flot-pie@1.0.0/src/jquery.flot.pie.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flot-spline@0.0.1/js/jquery.flot.spline.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simpleweather@3.1.0/jquery.simpleWeather.min.js"></script>
+    <script src="/static/assets/js/init/weather-init.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.9.0/dist/fullcalendar.min.js"></script>
+    <script src="/static/assets/js/init/fullcalendar-init.js"></script>
+    <!--Local Stuff-->
+    
+    
+    <!-- Scripts -->
+    {% endblock %}

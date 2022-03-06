@@ -1,0 +1,316 @@
+{% extends "inventory/static.html" %}
+{% block body %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.5/css/buttons.dataTables.min.css">
+<script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.6.5/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.6.5/js/buttons.html5.min.js"></script>
+<div class="content">
+            <!-- Animated -->
+            <div class="animated fadeIn">
+<!-- SWAMI KARUPPASWAMI THUNNAI -->
+
+    {% if ajb_para != [] %}
+               
+       
+            
+                
+                {% for i in report_ajb_data %}
+                    <script type="text/javascript">
+                        $(document).ready(function() {
+                    $('#example_{{i|string}}').DataTable( {
+                        dom: 'Bfrtip',
+                        buttons: [
+                            'copyHtml5',
+                            'excelHtml5',
+                            'csvHtml5',
+                            'pdfHtml5'
+                        ]
+                    } );
+                } );
+                    </script>
+                     <table class="table table-striped table-bordered" id="example_{{i|string}}">
+                        <thead>
+                            <th>NAME</th>
+                            <th>TIME_STAMP</th>
+                            {% for i in ajb_para %}
+                            <th>{{ajb_graph_name[i]}}</th>
+                            {% endfor %}
+                        </thead>
+                        <tbody>
+                    {% for j in report_ajb_data[i]["data"] %}
+                       
+                        
+                            <tr>
+                                <td>{{j['smb_id']}}</td>
+                                <td>{{j['TIME_STAMP']}}</td>
+                                
+                                    {% for ajb in ajb_para %}
+                                        {% for k in j %}
+                                        <!-- {{j}} -->
+                                            {% if ajb|string == k %}
+                                                
+                                                {% if (ajb == "FIELD33") or (ajb=="FIELD34") %}
+                                                    <td>{{j[ajb]/10}}</td>
+                                                {% else %}
+                                                    <td>{{j[ajb]/100}}</td>
+                                                {% endif %}
+                                            <!-- {% elif ajb|string == "DC Current" %}
+                                                <td>0</td>
+                                            {% elif ajb|string == "DC ISOLATOR STATUS" %} 
+                                                <td>0</td>
+                                            {% elif ajb|string == "POWER" %}
+                                                <td>0</td>
+                                            {% elif ajb|string == "SPD STATUS" %}
+                                                <td>0</td> -->
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endfor %}
+                                
+                            </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% endfor %}
+            
+    {% endif %}
+    
+
+    {% if w_w_d_para != [] %}
+               
+        <table class="table table-striped table-bordered" id="example2">
+            <thead>
+                <th>NAME</th>
+                <th>TIME_STAMP</th>
+                {% for i in w_w_d_para %}
+                <th>{{w_w_d_graph_name[i]}}</th>
+                {% endfor %}
+            </thead>
+            <tbody>
+            
+                
+                {% for i in report_w_w_d_data %}
+                    {% for j in report_w_w_d_data[i]["data"] %}
+                       
+                        
+                            <tr>
+                                <td>{{j['w_w']}}</td>
+                                <td>{{j['TIME_STAMP']}}</td>
+                                
+                                    {% for w_w_d in w_w_d_para %}
+                                        {% for k in j %}
+                                            {% if w_w_d|string == k|string %}
+                                                {% if (w_w_d == "FIELD1") or (w_w_d == "FIELD21")  %}
+                                                    <td>{{j[w_w_d]/10}}</td>
+                                                {% elif (w_w_d == "FIELD15") or (w_w_d == "FIELD14") %}
+                                                    <td>{{j[w_w_d]/1000}}</td>
+                                                {% else %}
+                                                    <td>{{j[w_w_d]}}</td>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endfor %}
+                                
+                            </tr>
+                    {% endfor %}
+                {% endfor %}
+            
+            </tbody>
+        </table>
+    {% endif %}
+     <script type="text/javascript">
+        $(document).ready(function() {
+    $('#example2').DataTable( {
+        dom: 'Bfrtip',
+        buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+            'pdfHtml5'
+        ]
+    } );
+} );
+    </script>
+        {% if inv_para != [] %}
+        
+                
+                {% for i in remodified_inv_data %}
+                 <script type="text/javascript">
+                        $(document).ready(function() {
+                    $('#example_{{i|string}}').DataTable( {
+                        dom: 'Bfrtip',
+                        buttons: [
+                            'copyHtml5',
+                            'excelHtml5',
+                            'csvHtml5',
+                            'pdfHtml5'
+                        ]
+                    } );
+                } );
+                    </script>
+                    <table class="table table-striped table-bordered" id="example_{{i|string}}">
+                    <thead>
+                        <th>NAME</th>
+                        <th>TIME_STAMP</th>
+                        {% for i in inv_para %}
+                        <th>{{inv_graph_name[i]}}</th>
+                        {% endfor %}
+                    </thead>
+                    <tbody>
+                    {% for j in remodified_inv_data[i]['data'] %}
+                        <!-- {{i}} {{(remodified_inv_data[i]['data']|length)}} -->
+                            <tr>
+                                <td>{{j['name']}}</td>
+                                <td>{{j['TIME_STAMP']}}</td>
+                                    
+                                    {% for inv in inv_para %}
+                                        {% for k in j %}
+
+                                            {% if inv|string == k|string %}
+
+                                                {% if (inv == "FIELD5")  %}
+                                                    <td>{{j[inv]/100}}</td>
+                                                {% elif (inv == "FIELD2")  %}
+                                                    <td>{{j[inv]}}</td>
+                                                {% elif (inv == "FIELD6") or (inv == "FIELD131") or (inv=="FIELD132") %}
+                                                    <td>{{j[inv]/1000}}</td>
+                                                {% else %}
+                                                    <td>{{j[inv]/10}}</td>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endfor %}
+                            </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+                {% endfor %}
+            
+            
+        {% endif %}
+        
+
+        {% if eng_para != [] %}
+                                <table class="table table-striped table-bordered" id="example4">
+                                    <thead>
+                                        <th>NAME</th>
+                                        <th>TIME_STAMP</th>
+                                        {% for i in eng_para %}
+                                        <th>{{eng_graph_name[i]}}</th>
+                                        {% endfor %}
+                                    </thead>
+                                    <tbody>
+                <!-- {{report_ajb_data}} -->
+            
+                
+                {% for i in remodified_eng_data %}
+                    {% for j in remodified_eng_data[i]['data'] %}
+                        {% if j['FIELD8']>=10000 %}
+                            <tr>
+                                <td>{{j['EM_id']}}</td>
+                                <td>{{j['TIME_STAMP']}}</td>
+                                    
+                                    {% for eng in eng_para %}
+                                        {% for k in j %}
+                                            {% if eng|string == k|string %}
+                                               <td>{{j[eng]}}</td>
+                                            {% endif %}
+                                        {% endfor %}
+                                {% endfor %}
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            
+            </tbody>
+        </table>
+        {% endif %}
+
+ <script type="text/javascript">
+        $(document).ready(function() {
+    $('#example4').DataTable( {
+        dom: 'Bfrtip',
+        buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+            'pdfHtml5'
+        ]
+    } );
+} );
+    </script>
+        
+              {% if w_w_para != [] %}      
+
+                    <table class="table table-striped table-bordered" id="example5">
+                        <thead>
+                            <th>NAME</th>
+                            <th>Insolation</th>
+                            <th>Performance Ratio</th>
+                            <th>Specific Yield</th>
+                            <th>cuf</th>
+                            <th>Total Generation</th>
+                        </thead>
+                        <tbody>
+
+                            {% set current_power=namespace(value=0) %}
+                    {% set tot_gen=namespace(value=0) %}
+                    {% set today_gen=namespace(value=0) %}
+                    
+                    {% for i in inverter_data %}
+
+                    {% for j in inv_sl_data %}
+                            {% if (i.slave_id |float == j.ID[0] |float) and (i.equipment_id|float == j.EID[0]|float) %}
+                                {% if j.connect_status[0] != 'offline' %}
+                                    {% set current_power.value = current_power.value + j.FIELD2[0]|float %}
+                                    {% set tot_gen.value = tot_gen.value + (j.FIELD32[1]|float/1000) %}
+                                    {% set today_gen.value = today_gen.value + (j.FIELD31[1]|float/1000) %}
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+
+                    {% for i in w_w_data %}
+                            {% for j in poa_data %}
+                                    {% if (i.slave_id |float == j.ID |float) and (i.equipment_id|float == j.EID|float) %}
+                                        <tr>
+                                            <td>Metrics</td>
+                                            <!-- <td>{{i.w_w}}</td> -->
+                                            <td>{{'%0.2f'|format((j.poa_value/4)/100000)}}</td>
+                                            <td>{{'%0.2f'|format(((today_gen.value/1000)*100)/(college_details.dc_capacity*((j.poa_value/4)/100000)))}} </td>
+                                            <td>{{'%0.2f'|format(((today_gen.value)/(college_details.dc_capacity*1000)))}}</td>
+                                            <td>{{'%0.2f'|format(((today_gen.value)/(college_details.dc_capacity*10*24)))}}</td>
+                                            <td>{{(today_gen.value)}}</td>
+                                        </tr>
+                                    {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+        {% endif %}
+         <script type="text/javascript">
+        $(document).ready(function() {
+    $('#example5').DataTable( {
+        dom: 'Bfrtip',
+        buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+            'pdfHtml5'
+        ]
+    } );
+} );
+    </script>
+</div>
+</div>
+ <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
+     <script type="text/javascript" src="https://res.cloudinary.com/dxfq3iotg/raw/upload/v1567487539/jquery.tabledit.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.4/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
+    <script src="/static/assets/js/main.js"></script>
+{% endblock %}
