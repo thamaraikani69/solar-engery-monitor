@@ -4174,8 +4174,8 @@ class abj_solar_panel_data(Resource):
 						
 						if sl_data!=None:
 							# ------------------------------------------------ off -------------------------------------------
-							today = datetime.datetime(2021, 7, 28)
-							endtoday = datetime.datetime(2021, 7, 26)
+							today = datetime.datetime(2021, 6, 27)
+							endtoday = datetime.datetime(2021, 6, 26)
 							mytime = datetime.datetime.strptime('0500','%H%M').time()
 							start_time = datetime.datetime.combine(today, mytime)
 							mytime = datetime.datetime.strptime('2300','%H%M').time()
@@ -4250,8 +4250,8 @@ class current_solar_panel_data(Resource):
 					# start_time = datetime.datetime.combine(today, mytime)
 
 					# ------------------------------------------------ off -------------------------------------------
-					today = datetime.datetime(2021, 7, 28)
-					endtoday = datetime.datetime(2021, 7, 28)
+					today = datetime.datetime(2021, 6, 27)
+					endtoday = datetime.datetime(2021, 6, 27)
 					mytime = datetime.datetime.strptime('0500','%H%M').time()
 					start_time = datetime.datetime.combine(today, mytime)
 					mytime = datetime.datetime.strptime('2300','%H%M').time()
@@ -4263,20 +4263,25 @@ class current_solar_panel_data(Resource):
 
 					current_graph_data=dict()
 					
-					print("------------------- Start time -----------------",start_time,today,the_timedate)
 					
 					for i in data:
 						if type_=='ALL':
+							
 							cursor.execute("SELECT * from solar_panel_data where EID=%s and DID=1 and ID=%s and api_key=%s and TIME_STAMP>=%s and TIME_STAMP<=%s ",(i['equipment_id'],i['slave_id'],api_key,from_date,to_date))
 							inv_data2=cursor.fetchall()
 						else:
 							cursor.execute("SELECT * from solar_panel_data where EID=%s and DID=1 and ID=%s and api_key=%s and TIME_STAMP>=%s and TIME_STAMP<=%s ",(i['equipment_id'],i['slave_id'],api_key,start_time,end_time))
 							inv_data2=cursor.fetchall()
+							print(type_,i['equipment_id'],i['slave_id'],"------------------- Start time -----------------",start_time,end_time,the_timedate)
+							print(from_date,to_date)
+							print(inv_data2)
+							# print(__kani)
 
 						for j in inv_data2:
 							current=j['FIELD2']
 							date=str(j['TIME_STAMP'])
-							
+							print(current)
+							# print(__kani)
 							if current <= 60000.0:
 								if date not in current_graph_data:
 									current_graph_data[date]={'value':0}
@@ -4345,8 +4350,8 @@ class inverter_solar_panel_data(Resource):
 					cursor.execute("SELECT * from gateway where admin=%s",(access_id))
 					api_key=cursor.fetchone()['api_key']
 					# ------------------------------------------------ off -------------------------------------------
-					today = datetime.datetime(2021, 7, 28)
-					endtoday = datetime.datetime(2021, 7, 26)
+					today = datetime.datetime(2021, 6, 27)
+					endtoday = datetime.datetime(2021, 6, 26)
 					# ------------------------------------------------------------------------------------------------
 					mytime = datetime.datetime.strptime('0500','%H%M').time()
 					start_time = datetime.datetime.combine(today, mytime)
@@ -4390,8 +4395,8 @@ class inverter_solar_panel_data(Resource):
 							end_time= timedate.replace(hour=20, minute=0, second=0, microsecond=0)
                             
                             # ------------------------------------------------ off -------------------------------------------
-							today = datetime.datetime(2021, 7, 28)
-							endtoday = datetime.datetime(2021, 7, 26)
+							today = datetime.datetime(2021, 6, 27)
+							endtoday = datetime.datetime(2021, 6, 26)
 							mytime = datetime.datetime.strptime('0500','%H%M').time()
 							start_time = datetime.datetime.combine(today, mytime)
 							mytime = datetime.datetime.strptime('2300','%H%M').time()
@@ -4564,8 +4569,8 @@ class engerymeter_solar_panel_data(Resource):
 						if( eng_data2!=None)&( eng_data1!=None)&(eng_data3!=None) :
 
 							# ------------------------------------------------ off -------------------------------------------
-							today = datetime.datetime(2021, 7, 28)
-							endtoday = datetime.datetime(2021, 7, 26)
+							today = datetime.datetime(2021, 6, 27)
+							endtoday = datetime.datetime(2021, 6, 26)
 							mytime = datetime.datetime.strptime('0500','%H%M').time()
 							start_time = datetime.datetime.combine(today, mytime)
 							mytime = datetime.datetime.strptime('2300','%H%M').time()
