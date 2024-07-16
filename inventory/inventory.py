@@ -3136,7 +3136,7 @@ def return_files_tut(folder_name,file_name):
 	try:
 		link=os.path.join(server_path,folder_name,file_name)
 		print("------------------------> ", link)
-		return send_file(link,attachment_filename=file_name)
+		return send_file(link,download_name=file_name)
 		# return send_file("/var/www/solar_panel/static/images/solar.png")
 	except Exception as e:
 		print(e)
