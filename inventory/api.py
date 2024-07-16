@@ -58,7 +58,7 @@ class login(Resource):
 			
 			connection = get_connection()
 			cursor = connection.cursor()
-			print(username_hash,password_hash)
+			# print(username_hash,password_hash)
 			cursor.execute("SELECT id,name from admin where admin.username=%s and admin.password=%s limit 1", (username_hash, password_hash))
 			result = cursor.fetchone()
 			if result==None:
@@ -809,12 +809,12 @@ class create_admin(Resource):
 						cursor.execute("INSERT into admin value(null,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(name,addedon,username,password_hash,location,status,lastchange,address,lat_lon,access_id))
 						connection.commit()
 						admin_id=cursor.lastrowid
-						print("admin_id",admin_id,"admin_grp_list",len(admin_grp_list))
+						# print("admin_id",admin_id,"admin_grp_list",len(admin_grp_list))
 						for i in admin_grp_list:
 							if i == "ALL":
 								pass
 							else:
-								print("pass")
+								# print("pass")
 								cursor.execute("INSERT into alloted_admin value(null,%s,%s,%s)",(addedon,admin_id,i))
 								connection.commit()
 						return make_response(jsonify({'message':'Successfully Created'}),200)
@@ -992,7 +992,7 @@ class view_admin(Resource):
 					result=cursor.fetchall()
 					cursor.execute("SELECT * from alloted_admin,admin_group where admin_group.id=alloted_admin.admin_grp_id ")
 					admin_result=cursor.fetchall()
-					print(result)
+					# print(result)
 					return make_response(jsonify({'message':"successfull","data":result,"admin_result":admin_result}),200)
 				except Exception as e:
 					return{'message':str(e)},400
@@ -2072,7 +2072,7 @@ class create_gateway(Resource):
 					api_check=cursor.fetchone()
 					api_check=None
 					if api_check==None:
-						print("*********--------*****", admin)
+						# print("*********--------*****", admin)
 						cursor.execute("INSERT into gateway value(null,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(meter_id,addedon,capacity,admin,status,lastchange,access_id,groupadmin,api_key))
 						connection.commit()
 
@@ -2512,7 +2512,7 @@ class view_w_w(Resource):
 
 		if rights()!=None:
 			access=rights()['access']
-			print(access)
+			# print(access)
 			if (access=='super_admin') :
 
 				try:
@@ -2523,7 +2523,7 @@ class view_w_w(Resource):
 					cursor.execute("SELECT * from w_w,admin where admin.id=w_w.admin and w_w.admin_id=%s",(access_id))
 					result=cursor.fetchall()
 					
-					print(result,access_id)
+					# print(result,access_id)
 					return make_response(jsonify({'message':"successfull",'data':result}),200)
 				except Exception as e:
 					return make_response(jsonify({'message':str(e)}),400)
@@ -2556,7 +2556,7 @@ class admin_view_w_w(Resource):
 					
 					cursor.execute("SELECT * from alloted_admin,admin_group where admin_group.id=alloted_admin.admin_grp_id and alloted_admin.admin_id=%s",(access_id))
 					college_details=cursor.fetchone()
-					print('==================++++++++++++++++++===============',college_details)
+					# print('==================++++++++++++++++++===============',college_details)
 					return make_response(jsonify({'message':"successfull",'data':result,'college_details':college_details}),200)
 				# except Exception as e:
 				# 	return make_response(jsonify({'message':str(e)}),400)
@@ -2630,7 +2630,7 @@ class super_admin_view_w_w(Resource):
 									poa_data.append({'poa_value':poa_data_['poa_value'],'EID':r['equipment_id'],'ID':r['slave_id'],'admin_id':r['admin']})
 
 									w_w_sl_data.append(w_W_data1)
-								print("poa_data",poa_data)
+								# print("poa_data",poa_data)
 
 								# today = datetime.datetime(2020, 11, 10)
 								# endtoday = datetime.datetime(2020, 12, 12)
@@ -3405,11 +3405,11 @@ class edit_support(Resource):
 
 						cursor.execute("UPDATE support set admin=%s,description=%s,status=%s,completed_on=%s,remarks=%s,periority=%s,due_date=%s where id=%s",(admin,description,status,completed_on,remarks,periority,due_date,id))
 						connection.commit()
-						print(allotedList)
-						print(id)
+						# print(allotedList)
+						# print(id)
 						cursor.execute("delete from alloted_to where support_id=%s",(id))
 						for account_id in allotedList:
-							print(account_id)
+							# print(account_id)
 							cursor.execute("INSERT into alloted_to value(null,%s,%s)",(id,account_id))
 							connection.commit()
 						return {'message':'Successfully Updated'},200
@@ -3497,7 +3497,7 @@ class create_accounts(Resource):
 				amount=request.json['amount']
 				fileName = request.json['fileName']
 			   
-				print(name)
+				# print(name)
 				if status=='Submitted':
 					status='Submitted'
 				else:
@@ -3875,23 +3875,23 @@ class solar_panel_data(Resource):
 				cursor.execute("INSERT into solar_panel_data value(null,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(api_key,S_NO,IP,DID,EID,ID,FC,ADDRESS,QUANTITY,TIME_STAMP,FIELD0,FIELD1,FIELD2,FIELD3,FIELD4,FIELD5,FIELD6,FIELD7,FIELD8,FIELD9,FIELD10,FIELD11,FIELD12,FIELD13,FIELD14,FIELD15,FIELD16,FIELD17,FIELD18,FIELD19,FIELD20,FIELD21,FIELD22,FIELD23,FIELD24,FIELD25,FIELD26,FIELD27,FIELD28,FIELD29,FIELD30,FIELD31,FIELD32,FIELD33,FIELD34,FIELD35,FIELD36,FIELD37,FIELD38,FIELD39,lastchange))
 				connection.commit()
 				lastrowid=cursor.lastrowid
-				print("API Added Successfully :",lastrowid)
+				# print("API Added Successfully :",lastrowid)
 				# ====================== Live Data DEtection =================
 				start_time=datetime.datetime.now() +datetime.timedelta(days=1)
 				start_time = start_time.replace(hour=5, minute=0, second=0, microsecond=0)
 				end_time= timedate.replace(hour=19, minute=0, second=0, microsecond=0)
 							
-				print('api timing',timedate,end_time,start_time)
+				# print('api timing',timedate,end_time,start_time)
 				# if (time_diff)>(datetime.timedelta(minutes=10)) or ((timedate>=end_time)&(timedate<=start_time)):
 				if ((timedate>=end_time)&(timedate<=start_time)):
 					pass
 				else:
-					print("API Checking line enter ")
+					# print("API Checking line enter ")
 					
 					#============================ ABB Inverter ==========================================
 					if ((int(float(EID)==1)) & (int(float(DID)==1)) & (int(float(FIELD0)==0)) & (int(float(FIELD1)==0)) & (int(float(FIELD2)==0)) & (int(float(FIELD3)==0)) & (int(float(FIELD4)==0)) & (int(float(FIELD5)==0)) & (int(float(FIELD6)==0)) & (int(float(FIELD7)==0)) & (int(float(FIELD8)==0)) & (int(float(FIELD9)==0)) & (int(float(FIELD10)==0)) & (int(float(FIELD11)==0)) & (int(float(FIELD12)==0)) & (int(float(FIELD13)==0)) & (int(float(FIELD14)==0)) & (int(float(FIELD15)==0)) & (int(float(FIELD16)==0)) & (int(float(FIELD17)==0)) & (int(float(FIELD18)==0)) & (int(float(FIELD19)==0)) & (int(float(FIELD20)==0)) & (int(float(FIELD21)==0)) & (int(float(FIELD22)==0)) & (int(float(FIELD23)==0)) & (int(float(FIELD24)==0)) & (int(float(FIELD25)==0)) & (int(float(FIELD26)==0)) & (int(float(FIELD27)==0)) & (int(float(FIELD28)==0)) & (int(float(FIELD29)==0)) & (int(float(FIELD30)==0)) & (int(float(FIELD31)==0)) & (int(float(FIELD32)==0)) & (int(float(FIELD33)==0)) & (int(float(FIELD34)==0)) & (int(float(FIELD35)==0)) & (int(float(FIELD36)==0)) & (int(float(FIELD37)==0)) & (int(float(FIELD38)==0)) & (int(float(FIELD39)==0) )):
 						
-						print("API Checking line enter Inverter")
+						# print("API Checking line enter Inverter")
 
 						if (int(ID)==81):
 							Status="ABB Inverter 01 Trip or Data Loss"
@@ -3912,64 +3912,64 @@ class solar_panel_data(Resource):
 						Template_id=1707162411081473392
 
 						switch_status=sms_switch('Inverter',0,sms_status_)
-						print(switch_status)
+						# print(switch_status)
 						if switch_status==True:
-							print("Posses to message delivery")
+							# print("Posses to message delivery")
 							sms_status=sms(message,Template_id)
-							print("sms status",sms_status)
+							# print("sms status",sms_status)
 					else:
-						print("API Checking else line enter Inverter")
+						# print("API Checking else line enter Inverter")
 						sms_switch('Inverter',1,sms_status_)
 					#============================ VCB Connection ==========================================
 					# print(type(EID),type(DID),type(FIELD0))
 
 					if ((int(float(EID)==20)) & (int(float(DID)==1)) & (int(float(FIELD0)==0)) & (int(float(FIELD1)==0)) & (int(float(FIELD2)==0)) & (int(float(FIELD3)==0)) & (int(float(FIELD4)==0)) & (int(float(FIELD5)==0)) & (int(float(FIELD6)==0)) & (int(float(FIELD7)==0)) & (int(float(FIELD8)==0)) & (int(float(FIELD9)==0)) & (int(float(FIELD10)==0)) & (int(float(FIELD11)==0)) & (int(float(FIELD12)==1)) & (int(float(FIELD13)==0)) & (int(float(FIELD14)==0)) & (int(float(FIELD15)==0)) & (int(float(FIELD16)==0)) & (int(float(FIELD17)==0)) & (int(float(FIELD18)==0)) & (int(float(FIELD19)==0)) & (int(float(FIELD20)==0)) & (int(float(FIELD21)==0)) & (int(float(FIELD22)==0)) & (int(float(FIELD23)==0)) & (int(float(FIELD24)==0)) & (int(float(FIELD25)==0)) & (int(float(FIELD26)==0)) & (int(float(FIELD27)==0)) & (int(float(FIELD28)==0)) & (int(float(FIELD29)==0)) & (int(float(FIELD30)==0)) & (int(float(FIELD31)==0)) & (int(float(FIELD32)==0)) & (int(float(FIELD33)==0)) & (int(float(FIELD34)==0)) & (int(float(FIELD35)==0)) & (int(float(FIELD36)==0)) & (int(float(FIELD37)==0)) & (int(float(FIELD38)==0)) & (int(float(FIELD39)==0) )):
-						print("============================ vcb connection =================",ID)
+						# print("============================ vcb connection =================",ID)
 						if (int(ID)==111):
-							print("pass1")
+							# print("pass1")
 							Status="HT Breaker VCB ICR 01 Trip "
 						elif (int(ID)==112):
-							print("psss2")
+							# print("psss2")
 							Status="HT Breaker VCB ICR 02 Trip "
 						elif (int(ID)==113):
-							print("psss3")
+							# print("psss3")
 							Status="HT Breaker VCB  MCR Trip "
 						# else:
 						# 	Status="empty"
 						# message="Service Alert: VET PV Date: "+str(today)+" Time:"+str(timedate)+" Status: HT Breaker VCB / ICR 01 / ICR 02 /MCR Trip Description: Please check HT Incomer –SECSMS"
 						message="Service Alert: VET PV Date:"+str(today)+" Time:"+str(timedate)+" Status:"+Status+' Description: Please check HT Incomer –SECSMS'
-						print("========================message===================",message)
+						# print("========================message===================",message)
 						# Template_id=1707162411061920618
 						Template_id=1707162411081473392
 						
 						switch_status=sms_switch('vcb',0,sms_status_)
-						print(switch_status)
+						# print(switch_status)
 						if switch_status==True:
-							print("Posses to message delivery")
+							# print("Posses to message delivery")
 							sms_status=sms(message,Template_id)
-							print("sms status",sms_status)
+							# print("sms status",sms_status)
 					else:
-						print("API Checking else line enter vcp")
+						# print("API Checking else line enter vcp")
 						sms_switch('vcb',1,sms_status_)
 						# =========================== Empty Data Error ========================================
 
 					if ((int(float(FIELD0)==0)) & (int(float(FIELD1)==0)) & (int(float(FIELD2)==0)) & (int(float(FIELD3)==0)) & (int(float(FIELD4)==0)) & (int(float(FIELD5)==0)) & (int(float(FIELD6)==0)) & (int(float(FIELD7)==0)) & (int(float(FIELD8)==0)) & (int(float(FIELD9)==0)) & (int(float(FIELD10)==0)) & (int(float(FIELD11)==0)) & (int(float(FIELD12)==0)) & (int(float(FIELD13)==0)) & (int(float(FIELD14)==0)) & (int(float(FIELD15)==0)) & (int(float(FIELD16)==0)) & (int(float(FIELD17)==0)) & (int(float(FIELD18)==0)) & (int(float(FIELD19)==0)) & (int(float(FIELD20)==0)) & (int(float(FIELD21)==0)) & (int(float(FIELD22)==0)) & (int(float(FIELD23)==0)) & (int(float(FIELD24)==0)) & (int(float(FIELD25)==0)) & (int(float(FIELD26)==0)) & (int(float(FIELD27)==0)) & (int(float(FIELD28)==0)) & (int(float(FIELD29)==0)) & (int(float(FIELD30)==0)) & (int(float(FIELD31)==0)) & (int(float(FIELD32)==0)) & (int(float(FIELD33)==0)) & (int(float(FIELD34)==0)) & (int(float(FIELD35)==0)) & (int(float(FIELD36)==0)) & (int(float(FIELD37)==0)) & (int(float(FIELD38)==0)) & (int(float(FIELD39)==0) )):
 						
-						print("API Checking line enter Gateway")
+						# print("API Checking line enter Gateway")
 
 						message="Service Alert: VET PV Date: "+str(today)+" Time: "+str(timedate)+" Status: Gateway disconnected or down Description: Please check the availability of power or internet – SECSMS"
 						# message="Service Alert: VET PV Date: "+str(today)+" Time:"+str(timedate)+" Status: Gateway disconnected or down Description: Please check the availability of power or internet – SECSMS"
 						Template_id=1707162411044570002
 
 						switch_status=sms_switch('Gateway',0,sms_status_)
-						print(switch_status)
+						# print(switch_status)
 						if switch_status==True:
-							print("Posses to message delivery")
+							# print("Posses to message delivery")
 							sms_status=sms(message,Template_id)
-							print("sms status",sms_status)
+							# print("sms status",sms_status)
 					else:
 
-						print("API Checking else line enter Gateway")
+						# print("API Checking else line enter Gateway")
 						sms_switch('Gateway',1,sms_status_)
 
 				return make_response(jsonify({'message':'Successful', 'id': lastrowid}),200)
@@ -4168,7 +4168,7 @@ class abj_solar_panel_data(Resource):
 					ajb_sl_data=[]
 
 					for i in data:
-						print("===========================",i['slave_id'],i['equipment_id'])
+						# print("===========================",i['slave_id'],i['equipment_id'])
 						cursor.execute("SELECT * from solar_panel_data where ID=%s and EID=%s ORDER BY my_id DESC LIMIT 1 ",(int(i['slave_id']),float(i['equipment_id'])))
 						sl_data=cursor.fetchone()
 						
@@ -4191,8 +4191,8 @@ class abj_solar_panel_data(Resource):
 							end_time= timedate.replace(hour=20, minute=0, second=0, microsecond=0)
 							
 							
-							print(timedate.time())
-							print(time_diff,'time diff',datetime.timedelta(minutes=10),'timedate',timedate_,'end time',end_time,'start time',start_time)
+							# print(timedate.time())
+							# print(time_diff,'time diff',datetime.timedelta(minutes=10),'timedate',timedate_,'end time',end_time,'start time',start_time)
 							if (time_diff)>(datetime.timedelta(minutes=10)) or ((timedate_>=end_time)&(timedate_<=start_time)):
 								
 								offline_data={'ID':i['slave_id'],'connect_status':'offline','TIME_STAMP':sl_data['TIME_STAMP']}
@@ -4272,22 +4272,22 @@ class current_solar_panel_data(Resource):
 						else:
 							cursor.execute("SELECT * from solar_panel_data where EID=%s and DID=1 and ID=%s and api_key=%s and TIME_STAMP>=%s and TIME_STAMP<=%s ",(i['equipment_id'],i['slave_id'],api_key,start_time,end_time))
 							inv_data2=cursor.fetchall()
-							print(type_,i['equipment_id'],i['slave_id'],"------------------- Start time -----------------",start_time,end_time,the_timedate)
-							print(from_date,to_date)
-							print(inv_data2)
+							# print(type_,i['equipment_id'],i['slave_id'],"------------------- Start time -----------------",start_time,end_time,the_timedate)
+							# print(from_date,to_date)
+							# print(inv_data2)
 							# print(__kani)
 
 						for j in inv_data2:
 							current=j['FIELD2']
 							date=str(j['TIME_STAMP'])
-							print(current)
+							# print(current)
 							# print(__kani)
 							if current <= 60000.0:
 								if date not in current_graph_data:
 									current_graph_data[date]={'value':0}
 									current_graph_data[date]['value']=current
 								else:
-									print(date,'===============',current)
+									# print(date,'===============',current)
 									current_graph_data[date]['value']+=current
 
 					poa_graph_data=dict()
@@ -4308,8 +4308,8 @@ class current_solar_panel_data(Resource):
 							else:
 								poa_graph_data[date]['value']+=poa_
 
-					print('graph_datas',current_graph_data)
-					print('poa_graph_datas',poa_graph_data)
+					# print('graph_datas',current_graph_data)
+					# print('poa_graph_datas',poa_graph_data)
 					
 					cursor.execute("SELECT * from solar_panel_data where EID=%s and ID=%s and api_key=%s ORDER by my_id desc limit 1",(i['equipment_id'],i['slave_id'],api_key))
 					irradiation=cursor.fetchone()['FIELD14']
@@ -4345,7 +4345,7 @@ class inverter_solar_panel_data(Resource):
 					cursor=connection.cursor()
 					data=request.json['inv_data']
 					# api_key="c8DrAnUs"
-					print("********************************************************************")
+					# print("********************************************************************")
 					
 					cursor.execute("SELECT * from gateway where admin=%s",(access_id))
 					api_key=cursor.fetchone()['api_key']
@@ -4380,13 +4380,13 @@ class inverter_solar_panel_data(Resource):
 
 						cursor.execute("SELECT * from solar_panel_data where EID=%s and DID=2 and ID=%s and api_key=%s and TIME_STAMP>=%s ORDER by my_id desc limit 1",(i['equipment_id'],i['slave_id'],api_key,inv_data1['TIME_STAMP']))
 						inv_data2=cursor.fetchone()
-						print('******************************* inv_data1',inv_data1,'inv_data2',inv_data2)
+						# print('******************************* inv_data1',inv_data1,'inv_data2',inv_data2)
 
 						# ------------------------ inv_data1 data -----------------------
-						print("SELECT * from solar_panel_data where EID={} and DID=1 and ID={} and api_key='{}'  ORDER by my_id desc limit 1".format(i['equipment_id'],i['slave_id'],api_key))
+						# print("SELECT * from solar_panel_data where EID={} and DID=1 and ID={} and api_key='{}'  ORDER by my_id desc limit 1".format(i['equipment_id'],i['slave_id'],api_key))
 						# ------------------------ inv_data2 data -----------------------
-						print("SELECT * from solar_panel_data where EID={} and DID=2 and ID={} and api_key='{}' and TIME_STAMP>='{}' ORDER by my_id desc limit 1".format(i['equipment_id'],i['slave_id'],api_key,inv_data1['TIME_STAMP']))
-						print("time differnce",timedate,inv_data1['lastchange'])
+						# print("SELECT * from solar_panel_data where EID={} and DID=2 and ID={} and api_key='{}' and TIME_STAMP>='{}' ORDER by my_id desc limit 1".format(i['equipment_id'],i['slave_id'],api_key,inv_data1['TIME_STAMP']))
+						# print("time differnce",timedate,inv_data1['lastchange'])
 						if( inv_data2!=None)&( inv_data1!=None) :
 							time_diff=timedate-inv_data1['lastchange']
 
@@ -4404,9 +4404,9 @@ class inverter_solar_panel_data(Resource):
 							# ------------------------------------------------------ -------------------------------------------
 					
 
-							print("time differnce",time_diff,"time delta",datetime.timedelta(minutes=10),"timedate",timedate,"start_time",start_time,"end_time",end_time)
+							# print("time differnce",time_diff,"time delta",datetime.timedelta(minutes=10),"timedate",timedate,"start_time",start_time,"end_time",end_time)
 							if (time_diff)>(datetime.timedelta(minutes=10)) or ((timedate>=end_time)&(timedate<=start_time)):
-								print("kani")
+								# print("kani")
 								inv_data1={'ID':i['slave_id'],'EID':i['equipment_id'],'connect_status':'offline'}
 								inv_data2={'ID':i['slave_id'],'EID':i['equipment_id'],'connect_status':'offline'}
 								eng_list = [inv_data1,inv_data2]
@@ -4610,7 +4610,7 @@ class engerymeter_solar_panel_data(Resource):
 								# print(merge_eng)
 								eng_sl_data.append(merge_eng)
 						else:
-							print('eng_data1',eng_data1,'eng_data2',eng_data2)
+							# print('eng_data1',eng_data1,'eng_data2',eng_data2)
 							eng_data1={'ID':i['slave_id'],'EID':i['equipment_id'],'connect_status':'offline'}
 							eng_data2={'ID':i['slave_id'],'EID':i['equipment_id'],'connect_status':'offline'}
 							eng_data3={'ID':i['slave_id'],'EID':i['equipment_id'],'connect_status':'offline'}
@@ -4621,15 +4621,15 @@ class engerymeter_solar_panel_data(Resource):
 
 							# print(merge_eng)
 							eng_sl_data.append(merge_eng)
-						print(eng_sl_data)
+						# print(eng_sl_data)
 					vcb_slave_id=[111,112,113]
 					vcb_check_data=[]
 
 					for i in vcb_slave_id:
-						print(i,api_key)
+						# print(i,api_key)
 						cursor.execute("SELECT * from solar_panel_data where EID=20 and DID=1 and ID=%s and api_key=%s ORDER by my_id desc limit 1",(i,api_key))
 						vcb_check=cursor.fetchone()
-						print ("============================ vc checkkk",vcb_check)
+						# print ("============================ vc checkkk",vcb_check)
 						if i==111:
 							if vcb_check!=None:
 								if vcb_check['FIELD11']==1:
@@ -4669,7 +4669,7 @@ class engerymeter_solar_panel_data(Resource):
 							
 
 
-					print("VCB Check DATA",vcb_check_data)
+					# print("VCB Check DATA",vcb_check_data)
 					if eng_sl_data!=[]:
 						return make_response(jsonify({'message':'Successfull',"data":eng_sl_data,"vcb_check_data":vcb_check_data}),200)
 					else:
@@ -4708,7 +4708,7 @@ class w_w_solar_panel_data(Resource):
 
 					w_w_sl_data=[]
 					poa_data=[]
-					print("data",data)
+					# print("data",data)
 					for i in data:
 						
 						cursor.execute("SELECT * from solar_panel_data where EID=%s and ID=%s and api_key=%s ORDER by my_id desc limit 1",(i['equipment_id'],i['slave_id'],api_key))
@@ -4718,11 +4718,11 @@ class w_w_solar_panel_data(Resource):
 						poa_data_=cursor.fetchone()
 						if poa_data_['poa_value']==None:
 							poa_data_['poa_value']=0
-						print('poa_data_',poa_data_)
+						# print('poa_data_',poa_data_)
 						poa_data.append({'poa_value':poa_data_['poa_value'],'EID':i['equipment_id'],'ID':i['slave_id']})
 
 						w_w_sl_data.append(w_W_data1)
-					print("poa_data",poa_data)
+					# print("poa_data",poa_data)
 					if w_w_sl_data!=[]:
 						return make_response(jsonify({'message':'Successfull',"data":w_w_sl_data,"poa_data":poa_data}),200)
 					else:
@@ -4850,7 +4850,7 @@ class data_visual(Resource):
 													if 'FIELD1' ==kk:
 														
 														# print("===================kk2",kk)
-														print("===================================",jj['FIELD1'])
+														# print("===================================",jj['FIELD1'])
 														add_dict={'FIELD101':jj['FIELD1']}
 														inv_list.update(add_dict)
 														# print(']]]]]]]]]]]2',inv_list)
@@ -5022,7 +5022,7 @@ class data_visual(Resource):
 															
 														if 'FIELD18' ==kk:
 															
-															print(j['TIME_STAMP'],'-------------',jj['FIELD18'])
+															# print(j['TIME_STAMP'],'-------------',jj['FIELD18'])
 															add_dict={'FIELD118':jj['FIELD18']}
 															eng_list.update(add_dict)
 															# print(']]]]]]]]]]]',remodified_eng_data)
@@ -5495,7 +5495,7 @@ class data_visual_graph(Resource):
 	                                                                        elif m=="FIELD103":
 	                                                                        	if k=="FIELD3":
 	                                                                        		plot_data1[j["TIME_STAMP"]][m] = j[k]
-	                                                                        		print(j["TIME_STAMP"])
+	                                                                        		# print(j["TIME_STAMP"])
 	                                                                        elif m=="FIELD110":
 	                                                                        	if k=="FIELD10":
 	                                                                        		plot_data1[j["TIME_STAMP"]][m] = j[k]

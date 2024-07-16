@@ -132,7 +132,7 @@ def dashboard():
 		headers={"x-access-token":session['inventory_token']}
 		data_api=requests.get(url,headers=headers)
 		result=data_api.json()
-		print(result)
+		# print(result)
 		if result['message']=="successfull":
 			admingrp_data=result['data']
 
@@ -221,7 +221,7 @@ def add_admin():
 	headers={"x-access-token":session['inventory_token']}
 	data_api=requests.get(url,headers=headers)
 	result=data_api.json()
-	print(result)
+	# print(result)
 	if result['message']=="successfull":
 		admingrp_data=result['data']
 
@@ -323,7 +323,7 @@ def edit_admin(id):
 	for i in alloted_admin:
 		selected_admin.append(i['admin_grp_id'])
 
-	print("+++++++++++===========selected_admin",selected_admin)
+	# print("+++++++++++===========selected_admin",selected_admin)
 	admin_select_data=[]
 	for i in admingrp_data:
 		if i['id'] in selected_admin:
@@ -331,7 +331,7 @@ def edit_admin(id):
 		else:
 			admin_select_data.append({'id':i['id'],'name':i['name'],'type':'unselected'})
 	admingrp_data=admin_select_data
-	print("+++++++++++===========admin_select_data",admin_select_data)
+	# print("+++++++++++===========admin_select_data",admin_select_data)
 
 	if rights()!=None:
 		access=rights()['access']
@@ -391,7 +391,7 @@ def add_superadmin():
 @inventory_token
 def edit_super_admin(id):
 	if request.method=="POST":
-		print("=============",id)
+		# print("=============",id)
 		url=site_url+'edit_super_admin'
 		data={'id':id,
 				'name':request.form['name'],
@@ -400,11 +400,11 @@ def edit_super_admin(id):
 				'location':request.form['location'],
 				'status':request.form['status']
 				}
-		print("===================",data)
+		# print("===================",data)
 		headers={"x-access-token":session['inventory_token']}
 		data_api=requests.put(url,json=data,headers=headers)
 		result=data_api.json()
-		print("======================result",result)
+		# print("======================result",result)
 		if result['message']=="Successfully Updated":
 			flash("Created Successfull")
 		else:
@@ -452,17 +452,17 @@ def add_admin_group():
 		headers={"x-access-token":session['inventory_token']}
 		data_api=requests.post(url,json=data,headers=headers)
 		result=data_api.json()
-		print(result)
+		# print(result)
 		if result['message']=="Successfully Created":
 			account_id=result['account_id']
 			fileName=request.files['fileName']
 			image_check=image_securty(fileName)
-			print(image_check)
+			# print(image_check)
 			if image_check==True:
 				type_='admin_group'
 				image_save= image_(fileName,account_id,server_path,type_)
 				message=image_save['message']
-				print(image_save)
+				# print(image_save)
 				if image_save['message'] == "save successfully":
 					flash("Created Successfull")
 					flash("file saved..")
@@ -479,7 +479,7 @@ def add_admin_group():
 	headers={"x-access-token":session['inventory_token']}
 	data_api=requests.get(url,headers=headers)
 	result=data_api.json()
-	print(result)
+	# print(result)
 	if result['message']=="successfull":
 		data=result['data']
 
@@ -515,12 +515,12 @@ def edit_admin_group(id):
 		headers={"x-access-token":session['inventory_token']}
 		data_api=requests.put(url,json=data,headers=headers)
 		result=data_api.json()
-		print(result)
+		# print(result)
 		if result['message']=="Successfully Updated":
 			account_id=id
 			fileName=request.files['fileName']
 			image_check=image_securty(fileName)
-			print("image_check",image_check)
+			# print("image_check",image_check)
 			if image_check==True:
 				type_='admin_group'
 				image_save= image_(fileName,account_id,server_path,type_)
@@ -619,14 +619,14 @@ def add_energy_meter():
 		headers={"x-access-token":session['inventory_token']}
 		data_api=requests.get(url,headers=headers)
 		result=data_api.json()
-		print('result',result)
+		# print('result',result)
 		if result['message']=="successfull":
 			data=result['data']
 		else:
 			error_message=result['message']
 			flash(error_message)
 			data=""
-		print(data)
+		# print(data)
 		if( access=='super_admin'):
 			url=site_url+'view_admin'
 			headers={"x-access-token":session['inventory_token']}
@@ -1522,7 +1522,7 @@ def add_weather():
 			admin_name_data=""
 		
 
-		print("data",data)
+		# print("data",data)
 		if( access=='super_admin') | (access=="admin"):
 			return render_template("inventory/create_weather.html",admin_name_data=admin_name_data,data=data,admin_data=admin_data,access=access,admingroup_data=admingroup_data)
 		else:
@@ -1615,7 +1615,7 @@ def edit_weather(id):
 			admin_name_data=""
 		
 
-		print("data",data)
+		# print("data",data)
 		if( access=='super_admin') | (access=="admin"):
 			return render_template("inventory/edit_weather.html",id=id,admin_name_data=admin_name_data,data=data,admin_data=admin_data,access=access,admingroup_data=admingroup_data)
 		else:
@@ -1681,7 +1681,7 @@ def gateway():
 		headers={"x-access-token":session['inventory_token']}
 		data_api=requests.get(url,headers=headers)
 		result=data_api.json()
-		print(result)
+		# print(result)
 		if result['message']=="successfull":
 			data=result['data']
 		else:
@@ -2027,16 +2027,16 @@ def plant(type_):
 		wind_speed=result['current']['wind_speed']
 		humidity=result['current']['humidity']
 
-		print('college_details',college_details)
+		# print('college_details',college_details)
 		from datetime import datetime
 		_timedate =datetime.now(timezone('Asia/Kolkata'))
 		_timedate=_timedate.replace(tzinfo=None)
 		_timedate=_timedate
 		today_date=_timedate
-		print("poa_graph_data",poa_graph_data)
-		print("current poa graph",current_graph_data)
-		print("=======================",last_data)
-		print("-------------------- weather details--------------",temperture,wind_speed,humidity,description)
+		# print("poa_graph_data",poa_graph_data)
+		# print("current poa graph",current_graph_data)
+		# print("=======================",last_data)
+		# print("-------------------- weather details--------------",temperture,wind_speed,humidity,description)
 		relink="/solar_panel/plant/ALL"
 		if( access=='admin' )|( access=='super_admin'):
 
@@ -2079,7 +2079,7 @@ def inventor():
 			sl_data=''
 			tdy_gen=''
 		# print(inverter_data)
-		print("**************************************************&&")
+		# print("**************************************************&&")
 
 		url=site_url+'admin_view_smb'
 		
@@ -2106,7 +2106,7 @@ def inventor():
 			flash(error_message)
 			smb_sl_data=''
 
-		print("================== smb_sl_data ===============",smb_sl_data)
+		# print("================== smb_sl_data ===============",smb_sl_data)
 		# print("================== sl_data ===============",sl_data)
 		# print("================== smb_data ===============",smb_data)
 		if( access=='admin' )|( access=='super_admin'):
@@ -2194,7 +2194,7 @@ def energymeter():
 			flash(error_message)
 			eng_sl_data=''
 			vcb_check_data=""
-		print("--------------------------------------- vcb check data ------------------",vcb_check_data)
+		# print("--------------------------------------- vcb check data ------------------",vcb_check_data)
 		# ---------------------inv----------------
 		url=site_url+'admin_view_inverter'
 		
@@ -2555,10 +2555,10 @@ def sl_data():
 			data_api=requests.get(url,headers=headers)
 			
 			result=data_api.json()
-			print(result)
+			# print(result)
 			if result['message']=="Successfull":
 				data=result['data']
-				print(data)
+				# print(data)
 			else:
 				error_message=result['message']
 				flash(error_message)
@@ -2679,7 +2679,7 @@ def edit_account(id):
 		
 		data_api=requests.put(url,json=data,headers=headers)
 		result=data_api.json()
-		print(result)
+		# print(result)
 		if result['message']=="Successfully Created":
 			account_id=result['account_id']
 			image_check=image_securty(fileName)
@@ -2790,7 +2790,7 @@ def add_users():
 		headers={"x-access-token":session['inventory_token']}
 		data_api=requests.post(url,json=data,headers=headers)
 		result=data_api.json()
-		print(result)
+		# print(result)
 		if result['message']=="Successfully Created":
 			flash("Created Successfull")
 		else:
@@ -2851,7 +2851,7 @@ def edit_users(id):
 		headers={"x-access-token":session['inventory_token']}
 		data_api=requests.put(url,json=data,headers=headers)
 		result=data_api.json()
-		print(result)
+		# print(result)
 		if result['message']=="Successfully Created":
 			flash("Created Successfull")
 		else:
@@ -2898,7 +2898,7 @@ def edit_users(id):
 	for i in user_data:
 		selected_admin.append(i['user_id'])
 
-	print("+++++++++++===========selected_admin",selected_admin)
+	# print("+++++++++++===========selected_admin",selected_admin)
 	admin_select_data=[]
 	for i in admin_data:
 		if i['id'] in selected_admin:
@@ -2906,7 +2906,7 @@ def edit_users(id):
 		else:
 			admin_select_data.append({'id':i['id'],'name':i['name'],'type':'unselected'})
 	admin_data=admin_select_data
-	print("+++++++++++===========admin_select_data",admin_select_data)
+	# print("+++++++++++===========admin_select_data",admin_select_data)
 
 	if rights()!=None:
 		access=rights()['access']
@@ -3135,11 +3135,11 @@ def delete_support(id):
 def return_files_tut(folder_name,file_name):
 	try:
 		link=os.path.join(server_path,folder_name,file_name)
-		print("------------------------> ", link)
+		# print("------------------------> ", link)
 		return send_file(link,download_name=file_name)
 		# return send_file("/var/www/solar_panel/static/images/solar.png")
 	except Exception as e:
-		print(e)
+		# print(e)
 	# except Exception as e:
 	# 	link=os.path.join(server_path,folder_name,'default.jpg')
 	# 	return send_file(link, attachment_filename='default.jpg')
@@ -3161,15 +3161,15 @@ def solar_panel_data():
 	QUANTITY=request.args.get("QUANTITY")
 	TIME_STAMP=float(request.args.get("TIME_STAMP")) / 1000
 	from datetime import datetime
-	print("=========>", TIME_STAMP,'ist',ist)
+	# print("=========>", TIME_STAMP,'ist',ist)
 	formatted_time = datetime.fromtimestamp(int(TIME_STAMP),ist)
 	formatted_time=formatted_time.replace(tzinfo=None)
 	formatted_time = str(formatted_time)
-	print("---------------> Formatted Time", formatted_time)
+	# print("---------------> Formatted Time", formatted_time)
 	TIME_STAMP = formatted_time
-	print("DATA Entry Check")
+	# print("DATA Entry Check")
 	FIELD0=request.args.get("FIELD0")
-	print("+++++++++++++++ Field 0 ++++++++++",FIELD0)
+	# print("+++++++++++++++ Field 0 ++++++++++",FIELD0)
 	FIELD1=request.args.get("FIELD1")
 	FIELD2=request.args.get("FIELD2")
 	FIELD3=request.args.get("FIELD3")
@@ -3263,11 +3263,11 @@ def solar_panel_data():
 		"FIELD39":FIELD39
 }
 	
-	print(data)
+	# print(data)
 	data_api=requests.post(url,json=data)
 	
 	result=data_api.json()
-	print(result)
+	# print(result)
 	if result['message']=="Successful":
 		
 		return jsonify({"message": result["message"], "id": result["id"]})
